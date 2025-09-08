@@ -1,5 +1,5 @@
 {
-  "name": "koquifi-lottery-frame-2025",
+  "name": "koquifi-farcaster-frame",
   "version": "1.0.0",
   "description": "KoquiFI Lottery Frame para Farcaster - Lotería semanal con tokens KOKI en Base",
   "main": "src/app.js",
