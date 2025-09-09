@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎰 KoquiFI Lottery - Lotería Web</title>
+    
+    <!-- Frame Meta Tags para Farcaster -->
+    <meta property="fc:frame" content="vNext" />
+    <meta property="fc:frame:image" content="https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/main" />
+    <meta property="fc:frame:image:aspect_ratio" content="1.91:1" />
+    <meta property="fc:frame:button:1" content="🎫 Comprar Ticket" />
+    <meta property="fc:frame:button:2" content="📊 Ver Estado" />
+    <meta property="fc:frame:button:3" content="🏆 Resultados" />
+    <meta property="fc:frame:button:4" content="ℹ️ Info" />
+    <meta property="fc:frame:post_url" content="https://koquifi-farcaster-frame-815l.vercel.app/api/frame/interact" />
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="🎰 KoquiFI Lottery - Lotería Web" />
+    <meta property="og:description" content="Lotería semanal con tokens KOKI en Base Network. ¡Gana premios increíbles!" />
+    <meta property="og:image" content="https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/main" />
+    <meta property="og:url" content="https://koquifi-farcaster-frame-815l.vercel.app/lottery.html" />
+    <meta property="og:type" content="website" />
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="🎰 KoquiFI Lottery - Lotería Web" />
+    <meta name="twitter:description" content="Lotería semanal con tokens KOKI en Base Network. ¡Gana premios increíbles!" />
+    <meta name="twitter:image" content="https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/main" />
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #2d2d2d 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #FF6B35, #FF8C42);
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(255, 107, 53, 0.3);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 107, 53, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.2);
+        }
+
+        .stat-card h3 {
+            color: #FF6B35;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #00ff88;
+        }
+
+        /* Action Buttons */
+        .actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, #FF6B35, #FF8C42);
+            color: white;
+            border: none;
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 107, 53, 0.4);
+        }
+
+        .action-btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* Lottery Info */
+        .lottery-info {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+
+        .lottery-info h2 {
+            color: #FF6B35;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .info-item {
+            text-align: center;
+        }
+
+        .info-item h4 {
+            color: #FF6B35;
+            margin-bottom: 10px;
+        }
+
+        /* Countdown */
+        .countdown {
+            background: linear-gradient(135deg, #FF6B35, #FF8C42);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .actions {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎰 KoquiFI Lottery</h1>
+        <p>Lotería Semanal con Tokens KOKI en Base Network</p>
+    </div>
+
+    <div class="container">
+        <!-- Countdown Timer -->
+        <div class="countdown" id="countdown">
+            PRÓXIMO SORTEO EN: <span id="timer">3D 12H 45M 30S</span>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>💰 Premio Total</h3>
+                <div class="value" id="totalPrize">1,250 KOKI</div>
+            </div>
+            <div class="stat-card">
+                <h3>🎫 Tickets Vendidos</h3>
+                <div class="value" id="ticketsSold">847</div>
+            </div>
+            <div class="stat-card">
+                <h3>👥 Participantes</h3>
+                <div class="value" id="participants">156</div>
+            </div>
+            <div class="stat-card">
+                <h3>🏆 Ganadores</h3>
+                <div class="value" id="winners">3</div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="actions">
+            <button class="action-btn" onclick="buyTicket()">
+                🎫 Comprar Ticket
+            </button>
+            <button class="action-btn" onclick="viewMyTickets()">
+                📋 Mis Tickets
+            </button>
+            <button class="action-btn" onclick="viewResults()">
+                🏆 Ver Resultados
+            </button>
+            <button class="action-btn" onclick="viewInfo()">
+                ℹ️ Información
+            </button>
+        </div>
+
+        <!-- Lottery Information -->
+        <div class="lottery-info">
+            <h2>🎯 Cómo Funciona</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <h4>🎫 Compra Tickets</h4>
+                    <p>Cada ticket cuesta 5 KOKI y contiene 5 números únicos del 1-50</p>
+                </div>
+                <div class="info-item">
+                    <h4>🎲 Sorteo Semanal</h4>
+                    <p>Los sorteos se realizan cada lunes a las 12:00 PM UTC</p>
+                </div>
+                <div class="info-item">
+                    <h4>🏆 Premios</h4>
+                    <p>3 niveles de premios: 1er lugar (70%), 2do lugar (20%), 3er lugar (10%)</p>
+                </div>
+                <div class="info-item">
+                    <h4>🔒 Seguro</h4>
+                    <p>Contratos verificados en Base Network, 100% descentralizado</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Winners -->
+        <div class="lottery-info">
+            <h2>🏆 Últimos Ganadores</h2>
+            <div id="winnersList">
+                <div class="info-item">
+                    <h4>🥇 1er Lugar</h4>
+                    <p>0x1234...5678 - 875 KOKI</p>
+                </div>
+                <div class="info-item">
+                    <h4>🥈 2do Lugar</h4>
+                    <p>0x9876...5432 - 250 KOKI</p>
+                </div>
+                <div class="info-item">
+                    <h4>🥉 3er Lugar</h4>
+                    <p>0x4567...8901 - 125 KOKI</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Countdown Timer
+        function startCountdown() {
+            let timeLeft = 3 * 24 * 60 * 60 + 12 * 60 * 60 + 45 * 60 + 30; // 3d 12h 45m 30s
+            
+            setInterval(() => {
+                const days = Math.floor(timeLeft / (24 * 60 * 60));
+                const hours = Math.floor((timeLeft % (24 * 60 * 60)) / (60 * 60));
+                const minutes = Math.floor((timeLeft % (60 * 60)) / 60);
+                const seconds = timeLeft % 60;
+                
+                document.getElementById('timer').textContent = `${days}D ${hours}H ${minutes}M ${seconds}S`;
+                
+                if (timeLeft > 0) {
+                    timeLeft--;
+                } else {
+                    timeLeft = 7 * 24 * 60 * 60; // Reset to 7 days
+                }
+            }, 1000);
+        }
+
+        // Action Functions
+        function buyTicket() {
+            alert('🎫 Función de compra de tickets\n\nConecta tu wallet para comprar tickets con tokens KOKI.');
+        }
+
+        function viewMyTickets() {
+            alert('📋 Mis Tickets\n\nConecta tu wallet para ver tus tickets y números.');
+        }
+
+        function viewResults() {
+            alert('🏆 Resultados\n\nLos resultados se publican cada lunes después del sorteo.');
+        }
+
+        function viewInfo() {
+            alert('ℹ️ Información\n\n• Cada ticket: 5 KOKI\n• 5 números únicos por ticket\n• Sorteos cada lunes\n• Premios en tokens KOKI');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            startCountdown();
+        });
+    </script>
+</body>
+</html>
