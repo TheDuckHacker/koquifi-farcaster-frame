@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<browserconfig>
+    <msapplication>
+        <tile>
+            <square150x150logo src="https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/main?w=150&h=150"/>
+            <TileColor>#FF6B35</TileColor>
+        </tile>
+    </msapplication>
+</browserconfig>

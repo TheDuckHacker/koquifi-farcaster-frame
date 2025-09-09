@@ -29,6 +29,22 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Servir archivos estáticos
 app.use(express.static('public'));
 
+// Headers específicos para Farcaster Mini Apps
+app.use((req, res, next) => {
+    // Headers para manifest
+    if (req.path === '/.well-known/manifest.json') {
+        res.setHeader('Content-Type', 'application/manifest+json');
+        res.setHeader('Cache-Control', 'public, max-age=3600');
+    }
+    
+    // Headers para CORS
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    
+    next();
+});
+
 // Ruta principal - servir el Frame HTML
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../public/index.html'));
