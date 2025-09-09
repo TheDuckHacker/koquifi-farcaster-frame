@@ -121,6 +121,7 @@ app.get('/', (req, res) => {
 // Rutas de la API
 app.use('/api/frame', frameRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api', require('../src/routes/webhook'));
 
 // Health check endpoint
 app.get('/health', (req, res) => {
