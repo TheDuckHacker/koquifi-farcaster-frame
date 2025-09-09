@@ -5,42 +5,33 @@ const imageGenerator = require('../services/imageGenerator');
 const ticketService = require('../services/ticketService');
 const notificationService = require('../services/notificationService');
 
-// Configuración de imágenes - URLs temporales de Unsplash
-const IMAGES = {
-    main: "https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?w=1200&h=630&fit=crop&crop=center",
-    buyTicket: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200&h=630&fit=crop&crop=center",
-    status: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&h=630&fit=crop&crop=center",
-    results: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&h=630&fit=crop&crop=center",
-    info: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200&h=630&fit=crop&crop=center",
-    confirm: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200&h=630&fit=crop&crop=center",
-    success: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&h=630&fit=crop&crop=center",
-    error: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&h=630&fit=crop&crop=center"
-};
-
 // Endpoint principal para interacciones del Frame
 router.post('/interact', async (req, res) => {
     try {
-        console.log('Frame interaction received:', req.body);
+        console.log('Frame interaction received:', JSON.stringify(req.body, null, 2));
         
         const { 
             untrustedData, 
-            trustedData 
+            trustedData,
+            inputText 
         } = req.body;
         
+        // Si no hay datos, devolver frame principal
         if (!untrustedData) {
+            console.log('No untrustedData, returning main frame');
             return res.json(getMainFrame());
         }
         
         const { buttonIndex, fid, castHash } = untrustedData;
-        const userFid = fid;
+        const userFid = fid || 'anonymous';
         
-        console.log(`User ${userFid} clicked button ${buttonIndex}`);
+        console.log(`User ${userFid} clicked button ${buttonIndex}, input: ${inputText}`);
         
         let response;
         
         switch(buttonIndex) {
             case 1: // Comprar Ticket
-                response = await handleBuyTicket(userFid);
+                response = await handleBuyTicket(userFid, inputText);
                 break;
             case 2: // Ver Estado
                 response = await handleViewStatus();
@@ -55,117 +46,156 @@ router.post('/interact', async (req, res) => {
                 response = getMainFrame();
         }
         
+        console.log('Sending response:', JSON.stringify(response, null, 2));
         res.json(response);
     } catch (error) {
         console.error('Error handling frame interaction:', error);
-        res.json(getErrorFrame('Error procesando la solicitud'));
+        res.status(500).json(getErrorFrame('Error interno: ' + error.message));
     }
 });
 
 // Endpoint para confirmar compra de ticket
 router.post('/buy-confirm', async (req, res) => {
     try {
+        console.log('Confirming ticket purchase:', req.body);
         const { untrustedData } = req.body;
-        const { fid } = untrustedData || {};
+        const { fid } = untrustedData;
         
-        // Aquí implementarías la lógica de compra real
-        // Por ahora simulamos la compra
-        const success = Math.random() > 0.3; // 70% de éxito
+        // Comprar ticket usando el servicio
+        const ticket = await ticketService.simulateBlockchainPurchase(fid);
         
-        if (success) {
-            res.json(getSuccessFrame('¡Ticket comprado exitosamente!'));
-        } else {
-            res.json(getErrorFrame('Error al comprar ticket. Intenta de nuevo.'));
-        }
+        // Enviar notificación
+        await notificationService.notifyTicketPurchase(fid, ticket);
+        
+        res.json({
+            type: 'frame',
+            image: `https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/success?ticket=${encodeURIComponent(JSON.stringify(ticket))}&t=${Date.now()}`,
+            buttons: [
+                { label: '🎫 Ver Mis Tickets', action: 'post' },
+                { label: '🔙 Volver', action: 'post' }
+            ],
+            postUrl: `https://koquifi-farcaster-frame-815l.vercel.app/api/frame/my-tickets`,
+            state: { step: 'success', message: '¡Ticket comprado exitosamente!', ticket: ticket }
+        });
     } catch (error) {
         console.error('Error confirming purchase:', error);
-        res.json(getErrorFrame('Error en la transacción'));
+        res.json(getErrorFrame('Error en la transacción: ' + error.message));
     }
 });
 
-// Función para manejar compra de ticket
-async function handleBuyTicket(userFid) {
+// Endpoint para ver tickets del usuario
+router.post('/my-tickets', async (req, res) => {
     try {
-        const lotteryState = await blockchainService.getLotteryState();
+        const { untrustedData } = req.body;
+        const { fid } = untrustedData;
+        
+        const tickets = await ticketService.getUserTickets(fid);
+        
+        res.json({
+            type: 'frame',
+            image: `https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/my-tickets?fid=${fid}&t=${Date.now()}`,
+            buttons: [
+                { label: '🎫 Comprar Más', action: 'post' },
+                { label: '🔙 Volver', action: 'post' }
+            ],
+            postUrl: `https://koquifi-farcaster-frame-815l.vercel.app/api/frame/interact`,
+            state: { step: 'my-tickets', tickets: tickets }
+        });
+    } catch (error) {
+        console.error('Error getting user tickets:', error);
+        res.json(getErrorFrame('Error obteniendo tickets: ' + error.message));
+    }
+});
+
+// Handlers para cada botón
+async function handleBuyTicket(userFid, inputText) {
+    try {
+        console.log(`Handling buy ticket for user ${userFid}`);
+        
+        // Simular compra de ticket
+        const ticket = await ticketService.simulateBlockchainPurchase(userFid);
         
         return {
             type: 'frame',
-            image: `https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/buy?t=${Date.now()}`,
+            image: `https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/buy?fid=${userFid}&t=${Date.now()}`,
             buttons: [
-                { label: '✅ Confirmar Compra', action: 'post_redirect' },
-                { label: '🔙 Volver', action: 'post' }
+                { label: '✅ Confirmar Compra', action: 'post' },
+                { label: '❌ Cancelar', action: 'post' }
             ],
             postUrl: `https://koquifi-farcaster-frame-815l.vercel.app/api/frame/buy-confirm`,
-            state: { userFid, step: 'confirm' }
+            state: { 
+                step: 'buy', 
+                userFid: userFid, 
+                ticket: ticket,
+                inputText: inputText 
+            }
         };
     } catch (error) {
         console.error('Error in handleBuyTicket:', error);
-        return getErrorFrame('Error obteniendo información de la lotería');
+        return getErrorFrame('Error comprando ticket: ' + error.message);
     }
 }
 
-// Función para ver estado de la lotería
 async function handleViewStatus() {
     try {
-        const lotteryState = await blockchainService.getLotteryState();
-        
-        if (!lotteryState) {
-            return getErrorFrame('No se pudo obtener el estado de la lotería');
-        }
+        console.log('Handling view status');
+        const lotteryInfo = await blockchainService.getLotteryInfo();
         
         return {
             type: 'frame',
-            image: `${process.env.BASE_URL || 'http://localhost:3000'}/api/frame/image/status?t=${Date.now()}`,
+            image: `https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/status?t=${Date.now()}`,
             buttons: [
-                { label: '🔄 Actualizar', action: 'post' },
+                { label: '🎫 Comprar Ticket', action: 'post' },
                 { label: '🔙 Volver', action: 'post' }
             ],
-            postUrl: `${process.env.BASE_URL || 'http://localhost:3000'}/api/frame/interact`,
-            state: { step: 'status' }
+            postUrl: `https://koquifi-farcaster-frame-815l.vercel.app/api/frame/interact`,
+            state: { step: 'status', lotteryInfo: lotteryInfo }
         };
     } catch (error) {
         console.error('Error in handleViewStatus:', error);
-        return getErrorFrame('Error obteniendo estado');
+        return getErrorFrame('Error obteniendo estado: ' + error.message);
     }
 }
 
-// Función para ver resultados
 async function handleViewResults() {
     try {
-        const results = await blockchainService.getLastResults();
-        
-        if (!results) {
-            return getErrorFrame('No hay resultados disponibles');
-        }
+        console.log('Handling view results');
+        const results = await blockchainService.getLotteryResults();
         
         return {
             type: 'frame',
-            image: `${process.env.BASE_URL || 'http://localhost:3000'}/api/frame/image/results?t=${Date.now()}`,
+            image: `https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/results?t=${Date.now()}`,
             buttons: [
-                { label: '📊 Ver Historial', action: 'post' },
+                { label: '🎫 Comprar Ticket', action: 'post' },
                 { label: '🔙 Volver', action: 'post' }
             ],
-            postUrl: `${process.env.BASE_URL || 'http://localhost:3000'}/api/frame/interact`,
-            state: { step: 'results' }
+            postUrl: `https://koquifi-farcaster-frame-815l.vercel.app/api/frame/interact`,
+            state: { step: 'results', results: results }
         };
     } catch (error) {
         console.error('Error in handleViewResults:', error);
-        return getErrorFrame('Error obteniendo resultados');
+        return getErrorFrame('Error obteniendo resultados: ' + error.message);
     }
 }
 
-// Función para mostrar información
-function handleInfo() {
-    return {
-        type: 'frame',
-        image: `${process.env.BASE_URL || 'http://localhost:3000'}/api/frame/image/info?t=${Date.now()}`,
-        buttons: [
-            { label: '🎫 Comprar Ticket', action: 'post' },
-            { label: '🔙 Volver', action: 'post' }
-        ],
-        postUrl: `${process.env.BASE_URL || 'http://localhost:3000'}/api/frame/interact`,
-        state: { step: 'info' }
-    };
+async function handleInfo() {
+    try {
+        console.log('Handling info');
+        
+        return {
+            type: 'frame',
+            image: `https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/info?t=${Date.now()}`,
+            buttons: [
+                { label: '🎫 Comprar Ticket', action: 'post' },
+                { label: '🔙 Volver', action: 'post' }
+            ],
+            postUrl: `https://koquifi-farcaster-frame-815l.vercel.app/api/frame/interact`,
+            state: { step: 'info' }
+        };
+    } catch (error) {
+        console.error('Error in handleInfo:', error);
+        return getErrorFrame('Error obteniendo información: ' + error.message);
+    }
 }
 
 // Frame principal
@@ -185,16 +215,16 @@ function getMainFrame() {
 }
 
 // Frame de éxito
-function getSuccessFrame(message) {
+function getSuccessFrame(message, ticket = null) {
     return {
         type: 'frame',
-        image: `${IMAGES.success}?t=${Date.now()}`,
+        image: `https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/success?ticket=${encodeURIComponent(JSON.stringify(ticket))}&t=${Date.now()}`,
         buttons: [
-            { label: '🎉 ¡Genial!', action: 'post' },
+            { label: '🎫 Ver Mis Tickets', action: 'post' },
             { label: '🔙 Volver', action: 'post' }
         ],
-        postUrl: `${process.env.BASE_URL || 'http://localhost:3000'}/api/frame/interact`,
-        state: { step: 'success', message }
+        postUrl: `https://koquifi-farcaster-frame-815l.vercel.app/api/frame/my-tickets`,
+        state: { step: 'success', message: message, ticket: ticket }
     };
 }
 
@@ -202,232 +232,116 @@ function getSuccessFrame(message) {
 function getErrorFrame(message) {
     return {
         type: 'frame',
-        image: `${IMAGES.error}?t=${Date.now()}`,
+        image: `https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/error?message=${encodeURIComponent(message)}&t=${Date.now()}`,
         buttons: [
             { label: '🔄 Reintentar', action: 'post' },
             { label: '🔙 Volver', action: 'post' }
         ],
-        postUrl: `${process.env.BASE_URL || 'http://localhost:3000'}/api/frame/interact`,
-        state: { step: 'error', message }
+        postUrl: `https://koquifi-farcaster-frame-815l.vercel.app/api/frame/interact`,
+        state: { step: 'error', message: message }
     };
 }
 
-// Endpoint para generar imagen principal
+// Endpoints para generar imágenes dinámicas
 router.get('/image/main', async (req, res) => {
     try {
         const imageBuffer = await imageGenerator.generateMainFrame();
         res.set('Content-Type', 'image/png');
-        res.set('Cache-Control', 'public, max-age=300'); // Cache por 5 minutos
+        res.set('Cache-Control', 'public, max-age=300');
         res.send(imageBuffer);
     } catch (error) {
         console.error('Error generating main image:', error);
-        res.status(500).json({ error: 'Error generando imagen' });
+        res.status(500).send('Error generating image');
     }
 });
 
-// Endpoint para generar imagen de estado
 router.get('/image/status', async (req, res) => {
     try {
-        const lotteryState = await blockchainService.getLotteryState();
-        const imageBuffer = await imageGenerator.generateStatusFrame(lotteryState);
+        const imageBuffer = await imageGenerator.generateStatusFrame();
         res.set('Content-Type', 'image/png');
-        res.set('Cache-Control', 'public, max-age=60'); // Cache por 1 minuto
+        res.set('Cache-Control', 'public, max-age=300');
         res.send(imageBuffer);
     } catch (error) {
         console.error('Error generating status image:', error);
-        res.status(500).json({ error: 'Error generando imagen de estado' });
+        res.status(500).send('Error generating image');
     }
 });
 
-// Endpoint para generar imagen de resultados
 router.get('/image/results', async (req, res) => {
     try {
-        const results = await blockchainService.getLastResults();
-        const imageBuffer = await imageGenerator.generateResultsFrame(results);
+        const imageBuffer = await imageGenerator.generateResultsFrame();
         res.set('Content-Type', 'image/png');
-        res.set('Cache-Control', 'public, max-age=300'); // Cache por 5 minutos
+        res.set('Cache-Control', 'public, max-age=300');
         res.send(imageBuffer);
     } catch (error) {
         console.error('Error generating results image:', error);
-        res.status(500).json({ error: 'Error generando imagen de resultados' });
+        res.status(500).send('Error generating image');
     }
 });
 
-// Endpoint para generar imagen de compra
 router.get('/image/buy', async (req, res) => {
     try {
-        const imageBuffer = await imageGenerator.generateBuyTicketFrame();
+        const { fid } = req.query;
+        const imageBuffer = await imageGenerator.generateBuyFrame(fid);
         res.set('Content-Type', 'image/png');
-        res.set('Cache-Control', 'public, max-age=300'); // Cache por 5 minutos
+        res.set('Cache-Control', 'public, max-age=300');
         res.send(imageBuffer);
     } catch (error) {
         console.error('Error generating buy image:', error);
-        res.status(500).json({ error: 'Error generando imagen de compra' });
+        res.status(500).send('Error generating image');
     }
 });
 
-// Endpoint para generar imagen de información
 router.get('/image/info', async (req, res) => {
     try {
         const imageBuffer = await imageGenerator.generateInfoFrame();
         res.set('Content-Type', 'image/png');
-        res.set('Cache-Control', 'public, max-age=300'); // Cache por 5 minutos
+        res.set('Cache-Control', 'public, max-age=300');
         res.send(imageBuffer);
     } catch (error) {
         console.error('Error generating info image:', error);
-        res.status(500).json({ error: 'Error generando imagen de información' });
+        res.status(500).send('Error generating image');
     }
 });
 
-// Endpoint para generar imagen de éxito
 router.get('/image/success', async (req, res) => {
     try {
         const { ticket } = req.query;
-        const ticketData = ticket ? JSON.parse(ticket) : null;
+        const ticketData = ticket ? JSON.parse(decodeURIComponent(ticket)) : null;
         const imageBuffer = await imageGenerator.generateSuccessFrame(ticketData);
         res.set('Content-Type', 'image/png');
-        res.set('Cache-Control', 'public, max-age=60'); // Cache por 1 minuto
+        res.set('Cache-Control', 'public, max-age=300');
         res.send(imageBuffer);
     } catch (error) {
         console.error('Error generating success image:', error);
-        res.status(500).json({ error: 'Error generando imagen de éxito' });
+        res.status(500).send('Error generating image');
     }
 });
 
-// Endpoint para generar imagen de tickets del usuario
 router.get('/image/my-tickets', async (req, res) => {
     try {
-        const { tickets, currentWeek } = req.query;
-        const ticketsData = tickets ? JSON.parse(tickets) : [];
-        const week = currentWeek || '1';
-        const imageBuffer = await imageGenerator.generateMyTicketsFrame(ticketsData, week);
+        const { fid } = req.query;
+        const imageBuffer = await imageGenerator.generateMyTicketsFrame(fid);
         res.set('Content-Type', 'image/png');
-        res.set('Cache-Control', 'public, max-age=60'); // Cache por 1 minuto
+        res.set('Cache-Control', 'public, max-age=300');
         res.send(imageBuffer);
     } catch (error) {
         console.error('Error generating my-tickets image:', error);
-        res.status(500).json({ error: 'Error generando imagen de tickets' });
+        res.status(500).send('Error generating image');
     }
 });
 
-// Endpoint para generar imagen de error
 router.get('/image/error', async (req, res) => {
     try {
         const { message } = req.query;
-        const errorMessage = message || 'Error desconocido';
-        const imageBuffer = await imageGenerator.generateErrorFrame(errorMessage);
+        const imageBuffer = await imageGenerator.generateErrorFrame(message);
         res.set('Content-Type', 'image/png');
-        res.set('Cache-Control', 'public, max-age=60'); // Cache por 1 minuto
+        res.set('Cache-Control', 'public, max-age=300');
         res.send(imageBuffer);
     } catch (error) {
         console.error('Error generating error image:', error);
-        res.status(500).json({ error: 'Error generando imagen de error' });
+        res.status(500).send('Error generating image');
     }
-});
-
-// Endpoint para confirmar compra de ticket
-router.post('/buy-confirm', async (req, res) => {
-    try {
-        console.log('Confirming ticket purchase:', req.body);
-        const { untrustedData } = req.body;
-        const { fid } = untrustedData;
-        
-        // Comprar ticket usando el servicio
-        const ticket = await ticketService.simulateBlockchainPurchase(fid);
-        
-        // Enviar notificación
-        await notificationService.notifyTicketPurchase(fid, ticket);
-        
-        res.json({
-            type: 'frame',
-            image: `${process.env.BASE_URL || 'http://localhost:3000'}/api/frame/image/success?t=${Date.now()}`,
-            buttons: [
-                { label: '🎫 Ver Mis Tickets', action: 'post' },
-                { label: '🔙 Volver', action: 'post' }
-            ],
-            postUrl: `${process.env.BASE_URL || 'http://localhost:3000'}/api/frame/interact`,
-            state: { step: 'success', message: '¡Ticket comprado exitosamente!', ticket: ticket }
-        });
-    } catch (error) {
-        console.error('Error confirming purchase:', error);
-        res.json(getErrorFrame('Error en la transacción: ' + error.message));
-    }
-});
-
-// Endpoint para ver tickets del usuario
-router.post('/my-tickets', async (req, res) => {
-    try {
-        const { untrustedData } = req.body;
-        const { fid } = untrustedData;
-        
-        const userTickets = ticketService.getUserTickets(fid);
-        const currentWeek = ticketService.getCurrentWeek();
-        
-        res.json({
-            type: 'frame',
-            image: `${process.env.BASE_URL || 'http://localhost:3000'}/api/frame/image/my-tickets?t=${Date.now()}`,
-            buttons: [
-                { label: '🎫 Comprar Más', action: 'post' },
-                { label: '🔙 Volver', action: 'post' }
-            ],
-            postUrl: `${process.env.BASE_URL || 'http://localhost:3000'}/api/frame/interact`,
-            state: { step: 'my-tickets', tickets: userTickets, currentWeek: currentWeek }
-        });
-    } catch (error) {
-        console.error('Error getting user tickets:', error);
-        res.json(getErrorFrame('Error obteniendo tickets'));
-    }
-});
-
-// Endpoint para notificaciones
-router.get('/notifications/:userFid', async (req, res) => {
-    try {
-        const { userFid } = req.params;
-        const notifications = notificationService.getUserNotifications(userFid);
-        
-        res.json({
-            success: true,
-            notifications: notifications,
-            stats: notificationService.getNotificationStats()
-        });
-    } catch (error) {
-        console.error('Error getting notifications:', error);
-        res.status(500).json({ error: 'Error obteniendo notificaciones' });
-    }
-});
-
-// Endpoint para estadísticas
-router.get('/stats', async (req, res) => {
-    try {
-        const lotteryState = await blockchainService.getLotteryState();
-        const ticketStats = ticketService.getStats();
-        const notificationStats = notificationService.getNotificationStats();
-        
-        res.json({
-            success: true,
-            lottery: lotteryState,
-            tickets: ticketStats,
-            notifications: notificationStats,
-            timestamp: new Date().toISOString()
-        });
-    } catch (error) {
-        console.error('Error getting stats:', error);
-        res.status(500).json({ error: 'Error obteniendo estadísticas' });
-    }
-});
-
-// Endpoint para obtener el estado actual del Frame
-router.get('/state', (req, res) => {
-    res.json({
-        currentFrame: 'main',
-        availableActions: [
-            'buy_ticket',
-            'view_status', 
-            'view_results',
-            'show_info'
-        ],
-        images: IMAGES
-    });
 });
 
 module.exports = router;

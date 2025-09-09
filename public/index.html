@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🎰 KoquiFI Lottery - Lotería Semanal en Base</title>
-    
+
     <!-- Frame Meta Tags para Farcaster -->
     <meta property="fc:frame" content="vNext" />
     <meta property="fc:frame:image" content="https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/main" />
@@ -14,7 +14,8 @@
     <meta property="fc:frame:button:3" content="🏆 Resultados" />
     <meta property="fc:frame:button:4" content="ℹ️ Info" />
     <meta property="fc:frame:post_url" content="https://koquifi-farcaster-frame-815l.vercel.app/api/frame/interact" />
-    
+    <meta property="fc:frame:input:text" content="Ingresa tu dirección de wallet (opcional)" />
+
     <!-- Open Graph Meta Tags -->
     <meta property="og:title" content="🎰 KoquiFI Lottery - Lotería Semanal en Base" />
     <meta property="og:description" content="Participa en la lotería semanal con tokens KOKI. ¡Gana premios increíbles cada lunes!" />
@@ -22,13 +23,13 @@
     <meta property="og:url" content="https://koquifi-farcaster-frame-815l.vercel.app" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="KoquiFI Lottery" />
-    
+
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="🎰 KoquiFI Lottery - Lotería Semanal en Base" />
     <meta name="twitter:description" content="Participa en la lotería semanal con tokens KOKI. ¡Gana premios increíbles cada lunes!" />
     <meta name="twitter:image" content="https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/main" />
-    
+
     <!-- Farcaster Mini App Meta Tags -->
     <meta name="farcaster:mini-app" content="true" />
     <meta name="farcaster:mini-app:name" content="KoquiFI Lottery" />
@@ -36,16 +37,16 @@
     <meta name="farcaster:mini-app:icon" content="https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/main?w=512&h=512" />
     <meta name="farcaster:mini-app:version" content="1.0.0" />
     <meta name="farcaster:mini-app:category" content="finance" />
-    
+
     <!-- Web App Manifest -->
     <link rel="manifest" href="/.well-known/manifest.json" />
-    
+
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="/images/icon.png" />
-    
+
     <!-- Apple Touch Icon -->
     <link rel="apple-touch-icon" href="https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/main?w=180&h=180" />
-    
+
     <!-- Additional Meta Tags for Mini Apps -->
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -54,7 +55,7 @@
     <meta name="application-name" content="KoquiFI Lottery" />
     <meta name="msapplication-TileColor" content="#FF6B35" />
     <meta name="msapplication-config" content="/browserconfig.xml" />
-    
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap');
         
@@ -63,300 +64,311 @@
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Exo 2', sans-serif;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #2d2d2d 100%);
+            color: #ffffff;
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
-            color: #fff;
         }
-        
-        /* Estrellas animadas de fondo */
-        .stars {
+
+        /* Partículas de fondo */
+        body::before {
+            content: '';
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #FF6B35, transparent),
+                radial-gradient(2px 2px at 40px 70px, #F7931E, transparent),
+                radial-gradient(1px 1px at 90px 40px, #00D4FF, transparent),
+                radial-gradient(1px 1px at 130px 80px, #FF6B35, transparent),
+                radial-gradient(2px 2px at 160px 30px, #F7931E, transparent);
+            background-repeat: repeat;
+            background-size: 200px 100px;
+            animation: particleMove 20s linear infinite;
             pointer-events: none;
             z-index: 1;
         }
-        
-        .star {
-            position: absolute;
-            background: white;
-            border-radius: 50%;
-            animation: twinkle 2s infinite;
+
+        @keyframes particleMove {
+            0% { transform: translateY(0px); }
+            100% { transform: translateY(-100px); }
         }
-        
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.3; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.2); }
-        }
-        
-        /* Contenedor principal */
+
         .container {
             position: relative;
             z-index: 2;
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
-            text-align: center;
-        }
-        
-        /* Título principal con efecto neon */
-        .main-title {
-            font-family: 'Orbitron', monospace;
-            font-size: clamp(2.5rem, 8vw, 4rem);
-            font-weight: 900;
-            background: linear-gradient(45deg, #ff6b35, #f7931e, #ffd700, #ff6b35);
-            background-size: 400% 400%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: gradientShift 3s ease-in-out infinite, glow 2s ease-in-out infinite alternate;
-            margin-bottom: 1rem;
-            text-shadow: 0 0 30px rgba(255, 107, 53, 0.5);
-        }
-        
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        
-        @keyframes glow {
-            from { text-shadow: 0 0 20px rgba(255, 107, 53, 0.5), 0 0 30px rgba(255, 107, 53, 0.3); }
-            to { text-shadow: 0 0 30px rgba(255, 107, 53, 0.8), 0 0 40px rgba(255, 107, 53, 0.5); }
-        }
-        
-        .subtitle {
-            font-size: clamp(1.2rem, 4vw, 1.5rem);
-            color: #00d4ff;
-            margin-bottom: 2rem;
-            font-weight: 600;
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 0.8; }
-            50% { opacity: 1; }
-        }
-        
-        .description {
-            font-size: clamp(1rem, 3vw, 1.1rem);
-            color: #e0e0e0;
-            margin-bottom: 3rem;
-            line-height: 1.6;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        /* Grid de características con efectos 3D */
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin: 3rem 0;
-        }
-        
-        .feature-card {
-            background: linear-gradient(145deg, #1e1e2e, #2a2a3e);
-            border-radius: 20px;
-            padding: 2rem;
-            border: 2px solid transparent;
-            background-clip: padding-box;
-            position: relative;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            overflow: hidden;
-            min-height: 200px;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
         }
-        
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(45deg, #ff6b35, #00d4ff, #ffd700, #ff6b35);
-            border-radius: 20px;
-            padding: 2px;
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask-composite: exclude;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInUp 1s ease-out;
         }
-        
-        .feature-card:hover {
-            transform: translateY(-10px) scale(1.05);
-            box-shadow: 0 20px 40px rgba(0, 212, 255, 0.3);
-        }
-        
-        .feature-card:hover::before {
-            opacity: 1;
-        }
-        
-        .feature-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            animation: bounce 2s infinite;
-        }
-        
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-            40% { transform: translateY(-10px); }
-            60% { transform: translateY(-5px); }
-        }
-        
-        .feature-title {
+
+        .title {
             font-family: 'Orbitron', monospace;
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: #ffd700;
-            margin-bottom: 0.5rem;
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            font-weight: 900;
+            background: linear-gradient(45deg, #FF6B35, #F7931E, #00D4FF);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease-in-out infinite;
+            margin-bottom: 20px;
+            text-shadow: 0 0 30px rgba(255, 107, 53, 0.5);
         }
-        
-        .feature-description {
-            color: #b0b0b0;
-            font-size: 0.9rem;
-            line-height: 1.4;
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .subtitle {
+            font-size: clamp(1.1rem, 3vw, 1.5rem);
+            color: #cccccc;
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+
+        .frame-status {
+            background: rgba(0, 255, 0, 0.1);
+            border: 2px solid #00ff00;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 0, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(0, 255, 0, 0.6); }
+        }
+
+        .status-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #00ff00;
+            margin-bottom: 15px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 10px 0;
+            font-size: 1.1rem;
+        }
+
+        .status-icon {
+            font-size: 1.5rem;
+            margin-right: 10px;
+        }
+
+        .instructions {
+            background: rgba(255, 107, 53, 0.1);
+            border: 2px solid #FF6B35;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+            text-align: left;
+            animation: slideInUp 1s ease-out 0.5s both;
+        }
+
+        .instructions h3 {
+            color: #FF6B35;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
             text-align: center;
         }
-        
-        /* Sección de instrucciones con efecto de partículas */
-        .instructions {
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(255, 107, 53, 0.1));
-            border-radius: 25px;
-            padding: 3rem;
-            margin: 3rem 0;
-            border: 1px solid rgba(0, 212, 255, 0.3);
-            position: relative;
-            overflow: hidden;
+
+        .instructions ol {
+            padding-left: 20px;
         }
-        
-        .instructions::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(0, 212, 255, 0.1) 0%, transparent 70%);
-            animation: rotate 20s linear infinite;
+
+        .instructions li {
+            margin: 10px 0;
+            font-size: 1.1rem;
+            line-height: 1.6;
         }
-        
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+
+        .url-display {
+            background: #000;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            word-break: break-all;
+            margin: 15px 0;
+            border: 1px solid #00ff00;
+            animation: glow 2s ease-in-out infinite alternate;
         }
-        
-        .instructions h2 {
-            font-family: 'Orbitron', monospace;
-            font-size: clamp(2rem, 6vw, 2.5rem);
-            color: #00d4ff;
-            margin-bottom: 2rem;
-            position: relative;
-            z-index: 2;
+
+        @keyframes glow {
+            from { box-shadow: 0 0 10px rgba(0, 255, 0, 0.3); }
+            to { box-shadow: 0 0 20px rgba(0, 255, 0, 0.6); }
         }
-        
-        .steps-list {
-            list-style: none;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .steps-list li {
-            background: linear-gradient(90deg, rgba(255, 107, 53, 0.2), rgba(0, 212, 255, 0.2));
-            margin: 1rem 0;
-            padding: 1.5rem;
+
+        .warning {
+            background: rgba(255, 0, 0, 0.1);
+            border: 2px solid #ff0000;
             border-radius: 15px;
-            border-left: 4px solid #ff6b35;
-            font-size: clamp(1rem, 3vw, 1.1rem);
-            color: #e0e0e0;
-            transition: all 0.3s ease;
-            cursor: pointer;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            animation: shake 0.5s ease-in-out infinite alternate;
         }
-        
-        .steps-list li:hover {
-            transform: translateX(10px);
-            background: linear-gradient(90deg, rgba(255, 107, 53, 0.3), rgba(0, 212, 255, 0.3));
+
+        @keyframes shake {
+            0% { transform: translateX(-2px); }
+            100% { transform: translateX(2px); }
         }
-        
-        /* Botones interactivos con efectos */
-        .interactive-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin: 3rem 0;
-            flex-wrap: wrap;
+
+        .warning h3 {
+            color: #ff0000;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
         }
-        
-        .interactive-btn {
-            background: linear-gradient(45deg, #ff6b35, #f7931e);
-            border: none;
-            border-radius: 50px;
-            padding: 1rem 2rem;
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .action-button {
+            background: linear-gradient(45deg, #FF6B35, #F7931E);
             color: white;
-            font-family: 'Orbitron', monospace;
-            font-weight: 700;
-            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            border: none;
+            padding: 20px 30px;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.3);
             position: relative;
             overflow: hidden;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            min-width: 150px;
+            animation: fadeInUp 1s ease-out 1s both;
         }
-        
-        .interactive-btn::before {
+
+        .action-button::before {
             content: '';
             position: absolute;
             top: 0;
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transition: left 0.5s ease;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
         }
-        
-        .interactive-btn:hover {
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 10px 25px rgba(255, 107, 53, 0.4);
-        }
-        
-        .interactive-btn:hover::before {
+
+        .action-button:hover::before {
             left: 100%;
         }
-        
-        .interactive-btn:active {
-            transform: translateY(-1px) scale(1.02);
+
+        .action-button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(255, 107, 53, 0.5);
         }
-        
-        /* Footer con efectos */
+
+        .action-button:active {
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+            width: 100%;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+            animation: fadeInUp 1s ease-out 1.5s both;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 107, 53, 0.1);
+            border-color: #FF6B35;
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .feature-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #FF6B35;
+        }
+
+        .feature-desc {
+            font-size: 0.9rem;
+            color: #cccccc;
+            line-height: 1.5;
+        }
+
         .footer {
-            margin-top: 4rem;
-            padding: 2rem;
-            border-top: 1px solid rgba(0, 212, 255, 0.3);
-            position: relative;
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeInUp 1s ease-out 2s both;
         }
-        
-        .footer-text {
+
+        .footer p {
             color: #888;
-            font-size: clamp(0.8rem, 2.5vw, 0.9rem);
-            margin: 0.5rem 0;
-            animation: fadeInUp 1s ease-out;
+            margin: 5px 0;
         }
-        
+
+        .network-badge {
+            display: inline-block;
+            background: linear-gradient(45deg, #0052FF, #00D4FF);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin: 10px 5px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -367,349 +379,239 @@
                 transform: translateY(0);
             }
         }
-        
-        /* Efectos de partículas flotantes */
-        .floating-particles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
-        }
-        
-        .particle {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: #00d4ff;
-            border-radius: 50%;
-            animation: float 6s infinite linear;
-        }
-        
-        @keyframes float {
-            0% {
-                transform: translateY(100vh) rotate(0deg);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-100px) rotate(360deg);
-                opacity: 0;
-            }
-        }
-        
-        /* Responsive para móviles */
-        @media (max-width: 768px) {
-            .container {
-                padding: 15px;
-            }
-            
-            .features-grid {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-            
-            .feature-card {
-                padding: 1.5rem;
-                min-height: 150px;
-            }
-            
-            .interactive-buttons {
-                flex-direction: column;
-                align-items: center;
-                gap: 1rem;
-            }
-            
-            .interactive-btn {
-                width: 100%;
-                max-width: 300px;
-            }
-            
-            .instructions {
-                padding: 2rem 1rem;
-            }
-            
-            .steps-list li {
-                padding: 1rem;
-                font-size: 0.9rem;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .main-title {
-                font-size: 2rem;
-            }
-            
-            .subtitle {
-                font-size: 1rem;
-            }
-            
-            .description {
-                font-size: 0.9rem;
-            }
-            
-            .feature-card {
-                padding: 1rem;
-                min-height: 120px;
-            }
-            
-            .feature-icon {
-                font-size: 2rem;
-            }
-            
-            .feature-title {
-                font-size: 1rem;
-            }
-            
-            .feature-description {
-                font-size: 0.8rem;
-            }
-        }
-        
-        /* Animación de entrada */
-        .fade-in {
-            animation: fadeIn 0.8s ease-out;
-        }
-        
-        @keyframes fadeIn {
+
+        @keyframes slideInUp {
             from {
                 opacity: 0;
-                transform: translateY(30px);
+                transform: translateY(50px);
             }
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
-        
-        /* Efecto de scroll suave */
-        html {
-            scroll-behavior: smooth;
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .title {
+                font-size: 2.5rem;
+            }
+            
+            .button-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animación de carga */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 107, 53, 0.3);
+            border-radius: 50%;
+            border-top-color: #FF6B35;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
-    <!-- Estrellas de fondo -->
-    <div class="stars" id="stars"></div>
-    
-    <!-- Partículas flotantes -->
-    <div class="floating-particles" id="particles"></div>
-    
     <div class="container">
-        <h1 class="main-title fade-in">🎰 KoquiFI Lottery</h1>
-        <p class="subtitle fade-in">Lotería Semanal con Tokens KOKI</p>
-        <p class="description fade-in">
-            Participa en la lotería semanal más emocionante de Base Network. 
-            Compra tickets con tokens KOKI y gana premios increíbles cada lunes.
-        </p>
-        
-        <div class="features-grid">
-            <div class="feature-card fade-in" onclick="animateCard(this)">
-                <div class="feature-icon">🎫</div>
-                <h3 class="feature-title">Tickets Únicos</h3>
-                <p class="feature-description">NFTs con números únicos del 1-50</p>
+        <div class="header">
+            <h1 class="title">🎰 KoquiFI Lottery</h1>
+            <p class="subtitle">Lotería Semanal con Tokens KOKI en Base Network</p>
+        </div>
+
+        <div class="frame-status">
+            <h3 class="status-title">📱 Estado del Frame de Farcaster</h3>
+            <div class="status-item">
+                <span class="status-icon">✅</span>
+                <span>Frame Configurado y Funcional</span>
             </div>
-            
-            <div class="feature-card fade-in" onclick="animateCard(this)">
-                <div class="feature-icon">🏆</div>
-                <h3 class="feature-title">Premios Grandes</h3>
-                <p class="feature-description">3 niveles de premios increíbles</p>
+            <div class="status-item">
+                <span class="status-icon">🎯</span>
+                <span>Botones Interactivos Activos</span>
             </div>
-            
-            <div class="feature-card fade-in" onclick="animateCard(this)">
-                <div class="feature-icon">⚡</div>
-                <h3 class="feature-title">Base Network</h3>
-                <p class="feature-description">Transacciones rápidas y baratas</p>
+            <div class="status-item">
+                <span class="status-icon">🖼️</span>
+                <span>Imágenes Dinámicas Generadas</span>
             </div>
-            
-            <div class="feature-card fade-in" onclick="animateCard(this)">
-                <div class="feature-icon">🔒</div>
-                <h3 class="feature-title">100% Descentralizado</h3>
-                <p class="feature-description">Contratos verificados y seguros</p>
+            <div class="status-item">
+                <span class="status-icon">⚡</span>
+                <span>API Backend Operativa</span>
             </div>
         </div>
-        
-        <div class="instructions fade-in">
-            <h2>🚀 Cómo Participar</h2>
-            <ol class="steps-list">
-                <li onclick="highlightStep(this)">Conecta tu billetera a Base Network</li>
-                <li onclick="highlightStep(this)">Obtén tokens KOKI en el DEX</li>
-                <li onclick="highlightStep(this)">Compra tu ticket con 5 números únicos</li>
-                <li onclick="highlightStep(this)">Espera al sorteo del lunes</li>
-                <li onclick="highlightStep(this)">¡Gana premios increíbles!</li>
+
+        <div class="instructions">
+            <h3>🚀 Cómo usar el Frame de Farcaster:</h3>
+            <ol>
+                <li><strong>Comparte esta URL en Farcaster:</strong></li>
+                <div class="url-display">https://koquifi-farcaster-frame-815l.vercel.app</div>
+                <li><strong>Los botones aparecerán automáticamente</strong> en el cast de Farcaster</li>
+                <li><strong>Haz clic en los botones</strong> para interactuar con la lotería</li>
+                <li><strong>El Frame cambiará dinámicamente</strong> según tu interacción</li>
+                <li><strong>Compra tickets, ve resultados, consulta información</strong> todo desde Farcaster</li>
             </ol>
         </div>
-        
-        <div class="interactive-buttons fade-in">
-            <button class="interactive-btn" onclick="simulateAction('Base Network')">
-                🌐 Base Network
+
+        <div class="warning">
+            <h3>⚠️ Importante:</h3>
+            <p>Los botones del Frame <strong>SOLO aparecen cuando compartes la URL en Farcaster</strong>. En el navegador web solo ves la página informativa.</p>
+        </div>
+
+        <div class="button-grid">
+            <button class="action-button" onclick="testAPI()">
+                🧪 Probar API
             </button>
-            <button class="interactive-btn" onclick="simulateAction('KOKI Token')">
-                🪙 KOKI Token
+            <button class="action-button" onclick="testImage()">
+                🖼️ Ver Imagen del Frame
             </button>
-            <button class="interactive-btn" onclick="simulateAction('NFT Tickets')">
-                🎫 NFT Tickets
+            <button class="action-button" onclick="copyURL()">
+                📋 Copiar URL
+            </button>
+            <button class="action-button" onclick="openFarcaster()">
+                🔗 Abrir Farcaster
             </button>
         </div>
-        
-        <div class="footer fade-in">
-            <p class="footer-text">🎯 Interactúa con los botones del Frame para comenzar</p>
-            <p class="footer-text">📱 Optimizado para Farcaster</p>
-            <p class="footer-text">🔗 Contratos verificados en BaseScan</p>
+
+        <div class="features">
+            <div class="feature-card">
+                <span class="feature-icon">🎫</span>
+                <h3 class="feature-title">Tickets Únicos</h3>
+                <p class="feature-desc">NFTs con números únicos del 1-50</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🏆</span>
+                <h3 class="feature-title">Premios Grandes</h3>
+                <p class="feature-desc">3 niveles de premios increíbles</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">⚡</span>
+                <h3 class="feature-title">Base Network</h3>
+                <p class="feature-desc">Transacciones rápidas y baratas</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🔒</span>
+                <h3 class="feature-title">100% Descentralizado</h3>
+                <p class="feature-desc">Contratos verificados y seguros</p>
+            </div>
+        </div>
+
+        <div id="test-results"></div>
+
+        <div class="footer">
+            <p>🎰 KoquiFI Lottery - Lotería Semanal en Base Network</p>
+            <div>
+                <span class="network-badge">Base Network</span>
+                <span class="network-badge">KOKI Token</span>
+                <span class="network-badge">NFT Tickets</span>
+            </div>
+            <p>🎯 Interactúa con los botones del Frame para comenzar</p>
+            <p>📱 Optimizado para Farcaster</p>
+            <p>🔗 Contratos verificados en BaseScan</p>
         </div>
     </div>
-    
+
     <script>
-        // Crear estrellas animadas
-        function createStars() {
-            const starsContainer = document.getElementById('stars');
-            const numStars = 100;
+        async function testAPI() {
+            const results = document.getElementById('test-results');
+            results.innerHTML = '<div class="frame-status"><div class="loading"></div> Probando API...</div>';
             
-            for (let i = 0; i < numStars; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 100 + '%';
-                star.style.width = Math.random() * 3 + 1 + 'px';
-                star.style.height = star.style.width;
-                star.style.animationDelay = Math.random() * 2 + 's';
-                star.style.animationDuration = (Math.random() * 3 + 2) + 's';
-                starsContainer.appendChild(star);
-            }
-        }
-        
-        // Crear partículas flotantes
-        function createParticles() {
-            const particlesContainer = document.getElementById('particles');
-            const numParticles = 20;
-            
-            for (let i = 0; i < numParticles; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.animationDelay = Math.random() * 6 + 's';
-                particle.style.animationDuration = (Math.random() * 3 + 4) + 's';
-                particlesContainer.appendChild(particle);
-            }
-        }
-        
-        // Animar tarjetas
-        function animateCard(card) {
-            card.style.transform = 'translateY(-15px) scale(1.1)';
-            card.style.boxShadow = '0 25px 50px rgba(0, 212, 255, 0.5)';
-            
-            setTimeout(() => {
-                card.style.transform = 'translateY(-10px) scale(1.05)';
-                card.style.boxShadow = '0 20px 40px rgba(0, 212, 255, 0.3)';
-            }, 200);
-        }
-        
-        // Resaltar pasos
-        function highlightStep(step) {
-            step.style.background = 'linear-gradient(90deg, rgba(255, 107, 53, 0.4), rgba(0, 212, 255, 0.4))';
-            step.style.transform = 'translateX(15px) scale(1.02)';
-            step.style.borderLeftColor = '#ffd700';
-            
-            setTimeout(() => {
-                step.style.background = 'linear-gradient(90deg, rgba(255, 107, 53, 0.2), rgba(0, 212, 255, 0.2))';
-                step.style.transform = 'translateX(10px)';
-                step.style.borderLeftColor = '#ff6b35';
-            }, 1000);
-        }
-        
-        // Simular acciones de botones
-        function simulateAction(action) {
-            const btn = event.target;
-            btn.style.transform = 'translateY(-5px) scale(1.1)';
-            btn.style.background = 'linear-gradient(45deg, #00d4ff, #ff6b35)';
-            
-            // Mostrar mensaje
-            const message = document.createElement('div');
-            message.style.cssText = `
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background: linear-gradient(45deg, #ff6b35, #00d4ff);
-                color: white;
-                padding: 1rem 2rem;
-                border-radius: 50px;
-                font-family: 'Orbitron', monospace;
-                font-weight: 700;
-                z-index: 1000;
-                animation: popIn 0.5s ease-out;
-                font-size: 1.2rem;
-            `;
-            message.textContent = `🎉 ${action} activado!`;
-            document.body.appendChild(message);
-            
-            setTimeout(() => {
-                btn.style.transform = 'translateY(-3px) scale(1.05)';
-                btn.style.background = 'linear-gradient(45deg, #ff6b35, #f7931e)';
-                message.remove();
-            }, 2000);
-        }
-        
-        // Efecto de entrada
-        window.addEventListener('load', () => {
-            createStars();
-            createParticles();
-            
-            // Animar elementos al cargar
-            const elements = document.querySelectorAll('.fade-in');
-            elements.forEach((el, index) => {
-                el.style.opacity = '0';
-                el.style.transform = 'translateY(50px)';
+            try {
+                const response = await fetch('/api/frame/interact', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        untrustedData: {
+                            buttonIndex: 1,
+                            fid: 'test-user'
+                        }
+                    })
+                });
                 
-                setTimeout(() => {
-                    el.style.transition = 'all 0.6s ease-out';
-                    el.style.opacity = '1';
-                    el.style.transform = 'translateY(0)';
-                }, index * 100);
+                const data = await response.json();
+                results.innerHTML = `
+                    <div class="frame-status">
+                        <h3 class="status-title">✅ API Funcionando Correctamente</h3>
+                        <div class="status-item">
+                            <span class="status-icon">🎯</span>
+                            <span>Respuesta recibida: ${data.type || 'frame'}</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-icon">🖼️</span>
+                            <span>Imagen: ${data.image ? 'Generada' : 'No disponible'}</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-icon">🔘</span>
+                            <span>Botones: ${data.buttons ? data.buttons.length : 0} disponibles</span>
+                        </div>
+                    </div>
+                `;
+            } catch (error) {
+                results.innerHTML = `
+                    <div class="warning">
+                        <h3>❌ Error en API</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function testImage() {
+            const results = document.getElementById('test-results');
+            results.innerHTML = '<div class="frame-status"><div class="loading"></div> Cargando imagen del Frame...</div>';
+            
+            const img = new Image();
+            img.onload = () => {
+                results.innerHTML = `
+                    <div class="frame-status">
+                        <h3 class="status-title">✅ Imagen del Frame Generada</h3>
+                        <img src="/api/frame/image/main" style="max-width: 100%; border-radius: 15px; margin-top: 15px;" />
+                    </div>
+                `;
+            };
+            img.onerror = () => {
+                results.innerHTML = `
+                    <div class="warning">
+                        <h3>❌ Error cargando imagen</h3>
+                        <p>No se pudo generar la imagen del Frame</p>
+                    </div>
+                `;
+            };
+            img.src = '/api/frame/image/main';
+        }
+
+        function copyURL() {
+            navigator.clipboard.writeText('https://koquifi-farcaster-frame-815l.vercel.app').then(() => {
+                alert('✅ URL copiada al portapapeles!\n\nAhora comparte esta URL en Farcaster para ver los botones interactivos.');
+            }).catch(() => {
+                alert('❌ Error al copiar. Copia manualmente:\n\nhttps://koquifi-farcaster-frame-815l.vercel.app');
             });
-        });
-        
-        // Efecto de scroll
-        window.addEventListener('scroll', () => {
-            const scrolled = window.pageYOffset;
-            const parallax = document.querySelector('.stars');
-            const speed = scrolled * 0.5;
-            parallax.style.transform = `translateY(${speed}px)`;
-        });
-        
-        // Detectar si es móvil
-        function isMobile() {
-            return window.innerWidth <= 768;
         }
-        
-        // Ajustar animaciones para móvil
-        if (isMobile()) {
-            document.body.style.overflowX = 'hidden';
+
+        function openFarcaster() {
+            window.open('https://warpcast.com', '_blank');
         }
+
+        // Auto-test al cargar la página
+        window.onload = () => {
+            setTimeout(() => {
+                testAPI();
+            }, 2000);
+        };
     </script>
-    
-    <style>
-        @keyframes popIn {
-            0% {
-                transform: translate(-50%, -50%) scale(0);
-                opacity: 0;
-            }
-            50% {
-                transform: translate(-50%, -50%) scale(1.2);
-                opacity: 1;
-            }
-            100% {
-                transform: translate(-50%, -50%) scale(1);
-                opacity: 1;
-            }
-        }
-    </style>
 </body>
 </html>

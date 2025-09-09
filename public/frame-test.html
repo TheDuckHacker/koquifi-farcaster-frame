@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎰 KoquiFI Lottery - Test Frame</title>
+
+    <!-- Frame Meta Tags para Farcaster -->
+    <meta property="fc:frame" content="vNext" />
+    <meta property="fc:frame:image" content="https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/main" />
+    <meta property="fc:frame:image:aspect_ratio" content="1.91:1" />
+    <meta property="fc:frame:button:1" content="🎫 Comprar Ticket" />
+    <meta property="fc:frame:button:2" content="📊 Ver Estado" />
+    <meta property="fc:frame:button:3" content="🏆 Resultados" />
+    <meta property="fc:frame:button:4" content="ℹ️ Info" />
+    <meta property="fc:frame:post_url" content="https://koquifi-farcaster-frame-815l.vercel.app/api/frame/interact" />
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="KoquiFI Lottery - Lotería Semanal en Base" />
+    <meta property="og:description" content="Participa en la lotería semanal con tokens KOKI. ¡Gana premios increíbles cada lunes!" />
+    <meta property="og:image" content="https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/main" />
+    <meta property="og:url" content="https://koquifi-farcaster-frame-815l.vercel.app" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="KoquiFI Lottery" />
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="🎰 KoquiFI Lottery - Lotería Semanal en Base" />
+    <meta name="twitter:description" content="Participa en la lotería semanal con tokens KOKI. ¡Gana premios increíbles cada lunes!" />
+    <meta name="twitter:image" content="https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/main" />
+
+    <!-- Farcaster Mini App Meta Tags -->
+    <meta name="farcaster:mini-app" content="true" />
+    <meta name="farcaster:mini-app:name" content="KoquiFI Lottery" />
+    <meta name="farcaster:mini-app:description" content="Lotería semanal con tokens KOKI en Base Network" />
+    <meta name="farcaster:mini-app:icon" content="https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/main?w=512&h=512" />
+    <meta name="farcaster:mini-app:version" content="1.0.0" />
+    <meta name="farcaster:mini-app:category" content="finance" />
+
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="/.well-known/manifest.json" />
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: white;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #FF6B35, #F7931E);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: #ccc;
+        }
+
+        .frame-info {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #FF6B35;
+        }
+
+        .button-demo {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .demo-button {
+            background: linear-gradient(45deg, #FF6B35, #F7931E);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+        }
+
+        .demo-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+        }
+
+        .instructions {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid #00ff00;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .warning {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid #ff0000;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .url-box {
+            background: #000;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin: 10px 0;
+            word-break: break-all;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin: 5px;
+        }
+
+        .status.success {
+            background: #00ff00;
+            color: #000;
+        }
+
+        .status.error {
+            background: #ff0000;
+            color: #fff;
+        }
+
+        .status.warning {
+            background: #ffaa00;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎰 KoquiFI Lottery</h1>
+        <p class="subtitle">Lotería Semanal con Tokens KOKI en Base Network</p>
+
+        <div class="frame-info">
+            <h3>📱 Estado del Frame de Farcaster</h3>
+            <p><span class="status success">✅ Frame Configurado</span></p>
+            <p><span class="status success">✅ Botones Funcionales</span></p>
+            <p><span class="status success">✅ Imágenes Dinámicas</span></p>
+            <p><span class="status success">✅ API Backend</span></p>
+        </div>
+
+        <div class="instructions">
+            <h3>🚀 Cómo usar el Frame:</h3>
+            <ol style="text-align: left;">
+                <li><strong>Comparte esta URL en Farcaster:</strong></li>
+                <div class="url-box">https://koquifi-farcaster-frame-815l.vercel.app</div>
+                <li><strong>Los botones aparecerán automáticamente</strong> en el cast</li>
+                <li><strong>Haz clic en los botones</strong> para interactuar</li>
+                <li><strong>El Frame cambiará</strong> según tu interacción</li>
+            </ol>
+        </div>
+
+        <div class="warning">
+            <h3>⚠️ Importante:</h3>
+            <p>Los botones del Frame <strong>SOLO aparecen cuando compartes la URL en Farcaster</strong>. En el navegador web solo ves la página informativa.</p>
+        </div>
+
+        <div class="button-demo">
+            <button class="demo-button" onclick="testAPI()">🧪 Probar API</button>
+            <button class="demo-button" onclick="testImage()">🖼️ Ver Imagen</button>
+            <button class="demo-button" onclick="copyURL()">📋 Copiar URL</button>
+            <button class="demo-button" onclick="openFarcaster()">🔗 Abrir Farcaster</button>
+        </div>
+
+        <div id="test-results"></div>
+    </div>
+
+    <script>
+        async function testAPI() {
+            const results = document.getElementById('test-results');
+            results.innerHTML = '<p>🧪 Probando API...</p>';
+            
+            try {
+                const response = await fetch('/api/frame/interact', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        untrustedData: {
+                            buttonIndex: 1,
+                            fid: 'test-user'
+                        }
+                    })
+                });
+                
+                const data = await response.json();
+                results.innerHTML = `
+                    <div class="frame-info">
+                        <h3>✅ API Funcionando</h3>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    </div>
+                `;
+            } catch (error) {
+                results.innerHTML = `
+                    <div class="warning">
+                        <h3>❌ Error en API</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function testImage() {
+            const results = document.getElementById('test-results');
+            results.innerHTML = '<p>🖼️ Cargando imagen...</p>';
+            
+            const img = new Image();
+            img.onload = () => {
+                results.innerHTML = `
+                    <div class="frame-info">
+                        <h3>✅ Imagen Generada</h3>
+                        <img src="/api/frame/image/main" style="max-width: 100%; border-radius: 10px;" />
+                    </div>
+                `;
+            };
+            img.onerror = () => {
+                results.innerHTML = `
+                    <div class="warning">
+                        <h3>❌ Error cargando imagen</h3>
+                    </div>
+                `;
+            };
+            img.src = '/api/frame/image/main';
+        }
+
+        function copyURL() {
+            navigator.clipboard.writeText('https://koquifi-farcaster-frame-815l.vercel.app').then(() => {
+                alert('URL copiada al portapapeles!');
+            });
+        }
+
+        function openFarcaster() {
+            window.open('https://warpcast.com', '_blank');
+        }
+
+        // Auto-test al cargar
+        window.onload = () => {
+            setTimeout(testAPI, 1000);
+        };
+    </script>
+</body>
+</html>
