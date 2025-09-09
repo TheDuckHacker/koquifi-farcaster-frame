@@ -9,7 +9,15 @@
   ],
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/api/(.*)",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/.well-known/(.*)",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/farcaster.json",
       "destination": "/api/index.js"
     }
   ]
