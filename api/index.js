@@ -60,29 +60,35 @@ app.get('/.well-known/manifest.json', (req, res) => {
     
     // Leer y enviar el manifest como JSON
     const manifest = {
-        "name": "KoquiFI Lottery",
-        "short_name": "KoquiFI",
-        "description": "Lotería semanal con tokens KOKI en Base Network",
-        "icon": "https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/main?w=512&h=512",
-        "start_url": "https://koquifi-farcaster-frame-815l.vercel.app/miniapp.html",
-        "display": "standalone",
-        "theme_color": "#FF6B35",
-        "background_color": "#1A1A1A",
-        "categories": ["finance", "games"],
-        "scope": "/",
-        "lang": "es",
-        "dir": "ltr",
-        "orientation": "portrait",
-        "screenshots": [
-            {
-                "src": "https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/main?w=1200&h=630",
-                "sizes": "1200x630",
-                "type": "image/png"
-            }
-        ],
-        "farcaster": {
-            "mini_app": true,
-            "version": "1.0.0"
+        "frame": {
+            "name": "KoquiFI Lottery",
+            "version": "1",
+            "iconUrl": "https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/main?w=512&h=512",
+            "homeUrl": "https://koquifi-farcaster-frame-815l.vercel.app/miniapp.html",
+            "imageUrl": "https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/main?w=1200&h=630",
+            "buttonTitle": "Jugar Lotería",
+            "splashImageUrl": "https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/main?w=1200&h=630",
+            "splashBackgroundColor": "#FF6B35",
+            "webhookUrl": "https://koquifi-farcaster-frame-815l.vercel.app/api/webhook",
+            "subtitle": "Lotería KOKI Base Network",
+            "description": "Lotería semanal con tokens KOKI en Base Network. Compra tickets, elige números y gana premios increíbles cada lunes. Sistema 100% descentralizado.",
+            "primaryCategory": "finance",
+            "screenshotUrls": [
+                "https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/main?w=1200&h=630"
+            ],
+            "heroImageUrl": "https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/main?w=1200&h=630",
+            "tags": [
+                "lottery",
+                "defi",
+                "base",
+                "koki",
+                "tokens"
+            ],
+            "tagline": "Gana Premios Increíbles",
+            "ogTitle": "KoquiFI Lottery",
+            "ogDescription": "Compra tickets, elige números y gana premios increíbles cada lunes en Base Network.",
+            "ogImageUrl": "https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/main?w=1200&h=630",
+            "castShareUrl": "https://warpcast.com/~/compose?text=🎰%20Participa%20en%20KoquiFI%20Lottery%20-%20Lotería%20semanal%20con%20tokens%20KOKI%20en%20Base%20Network%20https://koquifi-farcaster-frame-815l.vercel.app"
         }
     };
     
