@@ -95,17 +95,11 @@ app.get('/.well-known/manifest.json', (req, res) => {
     res.json(manifest);
 });
 
-// Endpoint específico para farcaster.json (requerido por Farcaster)
+// Endpoint para farcaster.json - SIMPLIFICADO
 app.get('/farcaster.json', (req, res) => {
-    // Headers específicos para JSON
     res.setHeader('Content-Type', 'application/json');
-    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept, User-Agent');
-    
-    // Manifest JSON para Farcaster Mini App
-    const farcasterManifest = {
+    res.status(200).json({
         "name": "KoquiFI Lottery",
         "version": "1",
         "iconUrl": "https://cdn-icons-png.flaticon.com/512/2583/2583344.png",
@@ -118,26 +112,15 @@ app.get('/farcaster.json', (req, res) => {
         "subtitle": "Lotería KOKI Base Network",
         "description": "Lotería semanal con tokens KOKI en Base Network. Compra tickets, elige números y gana premios increíbles cada lunes. Sistema 100% descentralizado.",
         "primaryCategory": "finance",
-        "screenshotUrls": [
-            "https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?w=1200&h=630&fit=crop"
-        ],
+        "screenshotUrls": ["https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?w=1200&h=630&fit=crop"],
         "heroImageUrl": "https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?w=1200&h=630&fit=crop",
-        "tags": [
-            "lottery",
-            "defi",
-            "base",
-            "koki",
-            "tokens"
-        ],
+        "tags": ["lottery", "defi", "base", "koki", "tokens"],
         "tagline": "Gana Premios Increíbles",
         "ogTitle": "KoquiFI Lottery",
         "ogDescription": "Compra tickets, elige números y gana premios increíbles cada lunes en Base Network.",
         "ogImageUrl": "https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?w=1200&h=630&fit=crop",
         "castShareUrl": "https://warpcast.com/~/compose?text=🎰%20Participa%20en%20KoquiFI%20Lottery%20-%20Lotería%20semanal%20con%20tokens%20KOKI%20en%20Base%20Network%20https://koquifi-farcaster-frame-815l.vercel.app"
-    };
-    
-    // Enviar JSON directamente
-    res.status(200).json(farcasterManifest);
+    });
 });
 
 // Endpoint alternativo para manifest

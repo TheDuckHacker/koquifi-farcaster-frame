@@ -15,10 +15,6 @@
     {
       "source": "/.well-known/(.*)",
       "destination": "/api/index.js"
-    },
-    {
-      "source": "/farcaster.json",
-      "destination": "/api/index.js"
     }
   ]
 }
