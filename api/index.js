@@ -53,6 +53,10 @@ app.get('/.well-known/manifest.json', (req, res) => {
     res.setHeader('Content-Type', 'application/manifest+json');
     res.setHeader('Cache-Control', 'public, max-age=3600');
     res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept, User-Agent');
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'SAMEORIGIN');
     
     // Leer y enviar el manifest como JSON
     const manifest = {
@@ -67,10 +71,41 @@ app.get('/.well-known/manifest.json', (req, res) => {
         "categories": ["finance", "games", "social"],
         "scope": "/",
         "lang": "es",
-        "dir": "ltr"
+        "dir": "ltr",
+        "orientation": "portrait",
+        "display_override": ["window-controls-overlay"],
+        "edge_side_panel": {
+            "preferred_width": 400
+        },
+        "launch_handler": {
+            "client_mode": "navigate-existing"
+        },
+        "protocol_handlers": [
+            {
+                "protocol": "web+koquifi",
+                "url": "https://koquifi-farcaster-frame-815l.vercel.app/?action=%s"
+            }
+        ],
+        "screenshots": [
+            {
+                "src": "https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/main?w=1200&h=630",
+                "sizes": "1200x630",
+                "type": "image/png"
+            }
+        ],
+        "related_applications": [],
+        "prefer_related_applications": false
     };
     
     res.json(manifest);
+});
+
+// Endpoint alternativo para manifest
+app.get('/manifest.json', (req, res) => {
+    res.setHeader('Content-Type', 'application/manifest+json');
+    res.setHeader('Cache-Control', 'public, max-age=3600');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.sendFile(path.join(__dirname, '../public/manifest.json'));
 });
 
 // Ruta principal - servir el Frame HTML
