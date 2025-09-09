@@ -22,16 +22,17 @@
   "author": "KoquiFI Team",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.18.2",
-    "ethers": "^6.8.0",
-    "dotenv": "^16.3.1",
+    "canvas": "^3.2.0",
     "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "ethers": "^6.8.0",
+    "express": "^4.18.2",
     "helmet": "^7.1.0"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1",
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
     "hardhat": "^2.19.0",
-    "@nomicfoundation/hardhat-toolbox": "^4.0.0"
+    "nodemon": "^3.0.1"
   },
   "engines": {
     "node": ">=18.0.0"

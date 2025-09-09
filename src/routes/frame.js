@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const blockchainService = require('../services/blockchain');
+const imageGenerator = require('../services/imageGenerator');
+const ticketService = require('../services/ticketService');
+const notificationService = require('../services/notificationService');
 
 // Configuración de imágenes - URLs temporales de Unsplash
 const IMAGES = {
@@ -87,7 +90,7 @@ async function handleBuyTicket(userFid) {
         
         return {
             type: 'frame',
-            image: `${IMAGES.buyTicket}?t=${Date.now()}`,
+            image: `${process.env.BASE_URL || 'http://localhost:3000'}/api/frame/image/buy?t=${Date.now()}`,
             buttons: [
                 { label: '✅ Confirmar Compra', action: 'post_redirect' },
                 { label: '🔙 Volver', action: 'post' }
@@ -112,7 +115,7 @@ async function handleViewStatus() {
         
         return {
             type: 'frame',
-            image: `${IMAGES.status}?t=${Date.now()}`,
+            image: `${process.env.BASE_URL || 'http://localhost:3000'}/api/frame/image/status?t=${Date.now()}`,
             buttons: [
                 { label: '🔄 Actualizar', action: 'post' },
                 { label: '🔙 Volver', action: 'post' }
@@ -137,7 +140,7 @@ async function handleViewResults() {
         
         return {
             type: 'frame',
-            image: `${IMAGES.results}?t=${Date.now()}`,
+            image: `${process.env.BASE_URL || 'http://localhost:3000'}/api/frame/image/results?t=${Date.now()}`,
             buttons: [
                 { label: '📊 Ver Historial', action: 'post' },
                 { label: '🔙 Volver', action: 'post' }
@@ -155,7 +158,7 @@ async function handleViewResults() {
 function handleInfo() {
     return {
         type: 'frame',
-        image: `${IMAGES.info}?t=${Date.now()}`,
+        image: `${process.env.BASE_URL || 'http://localhost:3000'}/api/frame/image/info?t=${Date.now()}`,
         buttons: [
             { label: '🎫 Comprar Ticket', action: 'post' },
             { label: '🔙 Volver', action: 'post' }
@@ -169,7 +172,7 @@ function handleInfo() {
 function getMainFrame() {
     return {
         type: 'frame',
-        image: `${IMAGES.main}?t=${Date.now()}`,
+        image: `${process.env.BASE_URL || 'http://localhost:3000'}/api/frame/image/main?t=${Date.now()}`,
         buttons: [
             { label: '🎫 Comprar Ticket', action: 'post' },
             { label: '📊 Ver Estado', action: 'post' },
@@ -208,6 +211,210 @@ function getErrorFrame(message) {
         state: { step: 'error', message }
     };
 }
+
+// Endpoint para generar imagen principal
+router.get('/image/main', async (req, res) => {
+    try {
+        const imageBuffer = await imageGenerator.generateMainFrame();
+        res.set('Content-Type', 'image/png');
+        res.set('Cache-Control', 'public, max-age=300'); // Cache por 5 minutos
+        res.send(imageBuffer);
+    } catch (error) {
+        console.error('Error generating main image:', error);
+        res.status(500).json({ error: 'Error generando imagen' });
+    }
+});
+
+// Endpoint para generar imagen de estado
+router.get('/image/status', async (req, res) => {
+    try {
+        const lotteryState = await blockchainService.getLotteryState();
+        const imageBuffer = await imageGenerator.generateStatusFrame(lotteryState);
+        res.set('Content-Type', 'image/png');
+        res.set('Cache-Control', 'public, max-age=60'); // Cache por 1 minuto
+        res.send(imageBuffer);
+    } catch (error) {
+        console.error('Error generating status image:', error);
+        res.status(500).json({ error: 'Error generando imagen de estado' });
+    }
+});
+
+// Endpoint para generar imagen de resultados
+router.get('/image/results', async (req, res) => {
+    try {
+        const results = await blockchainService.getLastResults();
+        const imageBuffer = await imageGenerator.generateResultsFrame(results);
+        res.set('Content-Type', 'image/png');
+        res.set('Cache-Control', 'public, max-age=300'); // Cache por 5 minutos
+        res.send(imageBuffer);
+    } catch (error) {
+        console.error('Error generating results image:', error);
+        res.status(500).json({ error: 'Error generando imagen de resultados' });
+    }
+});
+
+// Endpoint para generar imagen de compra
+router.get('/image/buy', async (req, res) => {
+    try {
+        const imageBuffer = await imageGenerator.generateBuyTicketFrame();
+        res.set('Content-Type', 'image/png');
+        res.set('Cache-Control', 'public, max-age=300'); // Cache por 5 minutos
+        res.send(imageBuffer);
+    } catch (error) {
+        console.error('Error generating buy image:', error);
+        res.status(500).json({ error: 'Error generando imagen de compra' });
+    }
+});
+
+// Endpoint para generar imagen de información
+router.get('/image/info', async (req, res) => {
+    try {
+        const imageBuffer = await imageGenerator.generateInfoFrame();
+        res.set('Content-Type', 'image/png');
+        res.set('Cache-Control', 'public, max-age=300'); // Cache por 5 minutos
+        res.send(imageBuffer);
+    } catch (error) {
+        console.error('Error generating info image:', error);
+        res.status(500).json({ error: 'Error generando imagen de información' });
+    }
+});
+
+// Endpoint para generar imagen de éxito
+router.get('/image/success', async (req, res) => {
+    try {
+        const { ticket } = req.query;
+        const ticketData = ticket ? JSON.parse(ticket) : null;
+        const imageBuffer = await imageGenerator.generateSuccessFrame(ticketData);
+        res.set('Content-Type', 'image/png');
+        res.set('Cache-Control', 'public, max-age=60'); // Cache por 1 minuto
+        res.send(imageBuffer);
+    } catch (error) {
+        console.error('Error generating success image:', error);
+        res.status(500).json({ error: 'Error generando imagen de éxito' });
+    }
+});
+
+// Endpoint para generar imagen de tickets del usuario
+router.get('/image/my-tickets', async (req, res) => {
+    try {
+        const { tickets, currentWeek } = req.query;
+        const ticketsData = tickets ? JSON.parse(tickets) : [];
+        const week = currentWeek || '1';
+        const imageBuffer = await imageGenerator.generateMyTicketsFrame(ticketsData, week);
+        res.set('Content-Type', 'image/png');
+        res.set('Cache-Control', 'public, max-age=60'); // Cache por 1 minuto
+        res.send(imageBuffer);
+    } catch (error) {
+        console.error('Error generating my-tickets image:', error);
+        res.status(500).json({ error: 'Error generando imagen de tickets' });
+    }
+});
+
+// Endpoint para generar imagen de error
+router.get('/image/error', async (req, res) => {
+    try {
+        const { message } = req.query;
+        const errorMessage = message || 'Error desconocido';
+        const imageBuffer = await imageGenerator.generateErrorFrame(errorMessage);
+        res.set('Content-Type', 'image/png');
+        res.set('Cache-Control', 'public, max-age=60'); // Cache por 1 minuto
+        res.send(imageBuffer);
+    } catch (error) {
+        console.error('Error generating error image:', error);
+        res.status(500).json({ error: 'Error generando imagen de error' });
+    }
+});
+
+// Endpoint para confirmar compra de ticket
+router.post('/buy-confirm', async (req, res) => {
+    try {
+        console.log('Confirming ticket purchase:', req.body);
+        const { untrustedData } = req.body;
+        const { fid } = untrustedData;
+        
+        // Comprar ticket usando el servicio
+        const ticket = await ticketService.simulateBlockchainPurchase(fid);
+        
+        // Enviar notificación
+        await notificationService.notifyTicketPurchase(fid, ticket);
+        
+        res.json({
+            type: 'frame',
+            image: `${process.env.BASE_URL || 'http://localhost:3000'}/api/frame/image/success?t=${Date.now()}`,
+            buttons: [
+                { label: '🎫 Ver Mis Tickets', action: 'post' },
+                { label: '🔙 Volver', action: 'post' }
+            ],
+            postUrl: `${process.env.BASE_URL || 'http://localhost:3000'}/api/frame/interact`,
+            state: { step: 'success', message: '¡Ticket comprado exitosamente!', ticket: ticket }
+        });
+    } catch (error) {
+        console.error('Error confirming purchase:', error);
+        res.json(getErrorFrame('Error en la transacción: ' + error.message));
+    }
+});
+
+// Endpoint para ver tickets del usuario
+router.post('/my-tickets', async (req, res) => {
+    try {
+        const { untrustedData } = req.body;
+        const { fid } = untrustedData;
+        
+        const userTickets = ticketService.getUserTickets(fid);
+        const currentWeek = ticketService.getCurrentWeek();
+        
+        res.json({
+            type: 'frame',
+            image: `${process.env.BASE_URL || 'http://localhost:3000'}/api/frame/image/my-tickets?t=${Date.now()}`,
+            buttons: [
+                { label: '🎫 Comprar Más', action: 'post' },
+                { label: '🔙 Volver', action: 'post' }
+            ],
+            postUrl: `${process.env.BASE_URL || 'http://localhost:3000'}/api/frame/interact`,
+            state: { step: 'my-tickets', tickets: userTickets, currentWeek: currentWeek }
+        });
+    } catch (error) {
+        console.error('Error getting user tickets:', error);
+        res.json(getErrorFrame('Error obteniendo tickets'));
+    }
+});
+
+// Endpoint para notificaciones
+router.get('/notifications/:userFid', async (req, res) => {
+    try {
+        const { userFid } = req.params;
+        const notifications = notificationService.getUserNotifications(userFid);
+        
+        res.json({
+            success: true,
+            notifications: notifications,
+            stats: notificationService.getNotificationStats()
+        });
+    } catch (error) {
+        console.error('Error getting notifications:', error);
+        res.status(500).json({ error: 'Error obteniendo notificaciones' });
+    }
+});
+
+// Endpoint para estadísticas
+router.get('/stats', async (req, res) => {
+    try {
+        const lotteryState = await blockchainService.getLotteryState();
+        const ticketStats = ticketService.getStats();
+        const notificationStats = notificationService.getNotificationStats();
+        
+        res.json({
+            success: true,
+            lottery: lotteryState,
+            tickets: ticketStats,
+            notifications: notificationStats,
+            timestamp: new Date().toISOString()
+        });
+    } catch (error) {
+        console.error('Error getting stats:', error);
+        res.status(500).json({ error: 'Error obteniendo estadísticas' });
+    }
+});
 
 // Endpoint para obtener el estado actual del Frame
 router.get('/state', (req, res) => {

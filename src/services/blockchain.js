@@ -123,31 +123,57 @@ class BlockchainService {
     
     // Datos simulados para desarrollo
     getSimulatedLotteryState() {
+        const now = new Date();
+        const lastMonday = new Date(now);
+        lastMonday.setDate(now.getDate() - ((now.getDay() + 6) % 7)); // Último lunes
+        lastMonday.setHours(12, 0, 0, 0);
+        
+        const nextMonday = new Date(lastMonday);
+        nextMonday.setDate(lastMonday.getDate() + 7);
+        
+        const timeUntilDraw = this.calculateTimeUntilDraw(Math.floor(lastMonday.getTime() / 1000));
+        
         return {
-            currentWeek: '42',
+            currentWeek: Math.floor((now - new Date('2024-01-01')) / (7 * 24 * 60 * 60 * 1000)).toString(),
             ticketPrice: '0.1',
-            totalTickets: '1250',
-            lastDrawTime: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toLocaleString('es-ES'),
-            nextDraw: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toLocaleString('es-ES'),
-            timeUntilDraw: '5d 12h 30m',
-            poolBalance: '125.5',
-            network: 'Base Sepolia (Simulado)',
-            contractAddress: 'TBD',
-            status: 'active'
+            totalTickets: Math.floor(Math.random() * 2000 + 500).toString(),
+            lastDrawTime: lastMonday.toLocaleString('es-ES'),
+            nextDraw: nextMonday.toLocaleString('es-ES'),
+            timeUntilDraw: timeUntilDraw,
+            poolBalance: (Math.random() * 200 + 50).toFixed(2),
+            network: 'Base Sepolia',
+            contractAddress: '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6',
+            status: 'active',
+            ticketsSoldThisWeek: Math.floor(Math.random() * 100 + 20)
         };
     }
     
     getSimulatedResults() {
+        const lastMonday = new Date();
+        lastMonday.setDate(lastMonday.getDate() - ((lastMonday.getDay() + 6) % 7));
+        lastMonday.setHours(12, 0, 0, 0);
+        
+        // Generar números ganadores aleatorios
+        const winningNumbers = [];
+        while (winningNumbers.length < 5) {
+            const num = Math.floor(Math.random() * 50) + 1;
+            if (!winningNumbers.includes(num)) {
+                winningNumbers.push(num);
+            }
+        }
+        winningNumbers.sort((a, b) => a - b);
+        
         return {
-            numbers: [7, 23, 31, 42, 49],
-            drawTime: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toLocaleString('es-ES'),
-            week: '41',
+            numbers: winningNumbers,
+            drawTime: lastMonday.toLocaleString('es-ES'),
+            week: Math.floor((lastMonday - new Date('2024-01-01')) / (7 * 24 * 60 * 60 * 1000)).toString(),
             winners: {
-                level1: 2,
-                level2: 15,
-                level3: 89
+                level1: Math.floor(Math.random() * 5), // 5 aciertos
+                level2: Math.floor(Math.random() * 20 + 5), // 4 aciertos
+                level3: Math.floor(Math.random() * 100 + 20) // 3 aciertos
             },
-            totalPrize: '125.5'
+            totalPrize: (Math.random() * 200 + 50).toFixed(2),
+            totalWinners: Math.floor(Math.random() * 125 + 25)
         };
     }
     

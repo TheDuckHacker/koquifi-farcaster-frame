@@ -5,6 +5,7 @@ const helmet = require('helmet');
 require('dotenv').config();
 
 const frameRoutes = require('../src/routes/frame');
+const adminRoutes = require('../src/routes/admin');
 const blockchainService = require('../src/services/blockchain');
 
 const app = express();
@@ -35,6 +36,7 @@ app.get('/', (req, res) => {
 
 // Rutas de la API
 app.use('/api/frame', frameRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {
