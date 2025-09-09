@@ -12,12 +12,7 @@
     <meta name="farcaster:mini-app:icon" content="https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/main?w=512&h=512" />
     
     <!-- Farcaster Mini App SDK -->
-    <script type="module">
-        import { sdk } from 'https://esm.sh/@farcaster/miniapp-sdk';
-        
-        // Hacer sdk disponible globalmente
-        window.sdk = sdk;
-    </script>
+    <script type="module" src="/farcaster-sdk.js"></script>
     
     <style>
         * {
@@ -708,20 +703,7 @@
             }
         }
 
-        // Inicializar SDK de Farcaster
-        async function initializeFarcasterSDK() {
-            try {
-                if (typeof window.sdk !== 'undefined') {
-                    // Llamar ready() para ocultar el splash screen
-                    await window.sdk.actions.ready();
-                    console.log('Farcaster SDK inicializado correctamente');
-                } else {
-                    console.log('Farcaster SDK no disponible');
-                }
-            } catch (error) {
-                console.error('Error inicializando Farcaster SDK:', error);
-            }
-        }
+        // SDK de Farcaster se inicializa automáticamente desde farcaster-sdk.js
 
         // Countdown timer
         function startCountdown() {
@@ -745,8 +727,7 @@
         }
 
         // Inicializar cuando la página esté lista
-        document.addEventListener('DOMContentLoaded', async function() {
-            await initializeFarcasterSDK();
+        document.addEventListener('DOMContentLoaded', function() {
             startCountdown();
         });
     </script>
