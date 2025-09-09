@@ -68,24 +68,11 @@ app.get('/.well-known/manifest.json', (req, res) => {
         "display": "standalone",
         "theme_color": "#FF6B35",
         "background_color": "#1A1A1A",
-        "categories": ["finance", "games", "social"],
+        "categories": ["finance", "games"],
         "scope": "/",
         "lang": "es",
         "dir": "ltr",
         "orientation": "portrait",
-        "display_override": ["window-controls-overlay"],
-        "edge_side_panel": {
-            "preferred_width": 400
-        },
-        "launch_handler": {
-            "client_mode": "navigate-existing"
-        },
-        "protocol_handlers": [
-            {
-                "protocol": "web+koquifi",
-                "url": "https://koquifi-farcaster-frame-815l.vercel.app/miniapp.html?action=%s"
-            }
-        ],
         "screenshots": [
             {
                 "src": "https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/main?w=1200&h=630",
@@ -93,12 +80,9 @@ app.get('/.well-known/manifest.json', (req, res) => {
                 "type": "image/png"
             }
         ],
-        "related_applications": [],
-        "prefer_related_applications": false,
         "farcaster": {
             "mini_app": true,
-            "version": "1.0.0",
-            "sdk_version": "latest"
+            "version": "1.0.0"
         }
     };
     

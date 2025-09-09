@@ -428,3 +428,4 @@ npm run dev:full
 
 // Ejecutar integración
 integrateKoquifi();
+
