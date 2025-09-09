@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎰 KoquiFI Lottery - App Completa</title>
+    
+    <!-- Farcaster Mini App Meta Tags -->
+    <meta name="farcaster:mini-app" content="true" />
+    <meta name="farcaster:mini-app:name" content="KoquiFI Lottery" />
+    <meta name="farcaster:mini-app:description" content="Lotería semanal con tokens KOKI en Base Network" />
+    <meta name="farcaster:mini-app:icon" content="https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/main?w=512&h=512" />
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="🎰 KoquiFI Lottery - App Completa" />
+    <meta property="og:description" content="Lotería semanal con tokens KOKI. ¡Gana premios increíbles cada lunes!" />
+    <meta property="og:image" content="https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/main" />
+    <meta property="og:url" content="https://koquifi-farcaster-frame-815l.vercel.app/app.html" />
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #FF6B35, #FF8C42);
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(255, 107, 53, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            backdrop-filter: blur(10px);
+        }
+
+        .app-title {
+            font-size: 2rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .app-subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 20px;
+            padding-bottom: 100px; /* Space for bottom nav */
+            min-height: calc(100vh - 200px);
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards */
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 107, 53, 0.2);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.2);
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #FF6B35;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(255, 107, 53, 0.05));
+            border: 1px solid rgba(255, 107, 53, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.3);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #FF6B35;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Buttons */
+        .btn {
+            background: linear-gradient(135deg, #FF6B35, #FF8C42);
+            border: none;
+            border-radius: 15px;
+            padding: 15px 25px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            border: 1px solid rgba(255, 107, 53, 0.3);
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 107, 53, 0.2);
+            padding: 10px 0;
+            display: flex;
+            justify-content: space-around;
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 15px;
+            min-width: 60px;
+        }
+
+        .nav-item.active {
+            background: rgba(255, 107, 53, 0.2);
+            transform: scale(1.1);
+        }
+
+        .nav-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .nav-label {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .nav-item.active .nav-label {
+            opacity: 1;
+            color: #FF6B35;
+        }
+
+        /* Lottery Cards */
+        .lottery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .lottery-card {
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(255, 107, 53, 0.05));
+            border: 2px solid rgba(255, 107, 53, 0.3);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lottery-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 107, 53, 0.1) 50%, transparent 70%);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .lottery-card:hover::before {
+            transform: translateX(100%);
+        }
+
+        .lottery-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(255, 107, 53, 0.3);
+        }
+
+        .lottery-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #FF6B35;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .lottery-status {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 15px;
+        }
+
+        /* Profile */
+        .profile-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #FF6B35, #FF8C42);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin: 0 auto 15px;
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.3);
+        }
+
+        .profile-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .profile-wallet {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            font-family: monospace;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 15px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .lottery-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">🎰</div>
+                <div>
+                    <div class="app-title">KoquiFI Lottery</div>
+                    <div class="app-subtitle">Lotería Semanal en Base Network</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Home Page -->
+        <div id="home" class="page active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">1,247</div>
+                    <div class="stat-label">Tickets Vendidos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">2.5 ETH</div>
+                    <div class="stat-label">Premio Total</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">3d 12h</div>
+                    <div class="stat-label">Tiempo Restante</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">47</div>
+                    <div class="stat-label">Números Disponibles</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">🎫 Comprar Ticket</div>
+                <p style="margin-bottom: 20px; opacity: 0.8;">Elige tus números de la suerte y participa en la lotería semanal</p>
+                <button class="btn" onclick="showPage('lottery')">Comprar Ahora</button>
+            </div>
+
+            <div class="card">
+                <div class="card-title">🏆 Últimos Ganadores</div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <span>0x1234...5678</span>
+                    <span style="color: #FF6B35; font-weight: bold;">1.2 ETH</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <span>0x9876...5432</span>
+                    <span style="color: #FF6B35; font-weight: bold;">0.8 ETH</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span>0x4567...8901</span>
+                    <span style="color: #FF6B35; font-weight: bold;">0.5 ETH</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lottery Page -->
+        <div id="lottery" class="page">
+            <div class="card">
+                <div class="card-title">🎲 Selecciona tus Números</div>
+                <p style="margin-bottom: 20px; opacity: 0.8;">Elige 5 números únicos del 1 al 50</p>
+                
+                <div class="lottery-grid" id="numberGrid">
+                    <!-- Numbers will be generated by JavaScript -->
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                        <span>Números Seleccionados:</span>
+                        <span id="selectedCount">0/5</span>
+                    </div>
+                    <div id="selectedNumbers" style="margin-bottom: 20px; min-height: 30px;"></div>
+                    <button class="btn" id="buyButton" onclick="buyTicket()" disabled>Comprar Ticket (0.1 ETH)</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Page -->
+        <div id="results" class="page">
+            <div class="card">
+                <div class="card-title">🏆 Resultados del Sorteo</div>
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <div style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 10px;">Sorteo #247 - Lunes 15 Enero 2024</div>
+                    <div style="font-size: 1.5rem; font-weight: bold; color: #FF6B35;">Números Ganadores</div>
+                </div>
+                
+                <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; flex-wrap: wrap;">
+                    <div class="lottery-number" style="font-size: 2rem; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #FF6B35, #FF8C42); border-radius: 15px;">7</div>
+                    <div class="lottery-number" style="font-size: 2rem; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #FF6B35, #FF8C42); border-radius: 15px;">23</div>
+                    <div class="lottery-number" style="font-size: 2rem; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #FF6B35, #FF8C42); border-radius: 15px;">31</div>
+                    <div class="lottery-number" style="font-size: 2rem; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #FF6B35, #FF8C42); border-radius: 15px;">42</div>
+                    <div class="lottery-number" style="font-size: 2rem; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #FF6B35, #FF8C42); border-radius: 15px;">49</div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">Ganadores</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">2.5 ETH</div>
+                        <div class="stat-label">Premio Total</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">1,247</div>
+                        <div class="stat-label">Tickets</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">🎉 Ganadores</div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 15px; background: rgba(255, 107, 53, 0.1); border-radius: 10px;">
+                    <div>
+                        <div style="font-weight: bold;">0x1234...5678</div>
+                        <div style="font-size: 0.9rem; opacity: 0.8;">5 números correctos</div>
+                    </div>
+                    <div style="color: #FF6B35; font-weight: bold; font-size: 1.2rem;">1.2 ETH</div>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 15px; background: rgba(255, 107, 53, 0.1); border-radius: 10px;">
+                    <div>
+                        <div style="font-weight: bold;">0x9876...5432</div>
+                        <div style="font-size: 0.9rem; opacity: 0.8;">4 números correctos</div>
+                    </div>
+                    <div style="color: #FF6B35; font-weight: bold; font-size: 1.2rem;">0.8 ETH</div>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(255, 107, 53, 0.1); border-radius: 10px;">
+                    <div>
+                        <div style="font-weight: bold;">0x4567...8901</div>
+                        <div style="font-size: 0.9rem; opacity: 0.8;">3 números correctos</div>
+                    </div>
+                    <div style="color: #FF6B35; font-weight: bold; font-size: 1.2rem;">0.5 ETH</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Page -->
+        <div id="profile" class="page">
+            <div class="profile-header">
+                <div class="profile-avatar">👤</div>
+                <div class="profile-name">Usuario Anónimo</div>
+                <div class="profile-wallet">0x1234...5678</div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">📊 Mis Estadísticas</div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">12</div>
+                        <div class="stat-label">Tickets Comprados</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">0.3 ETH</div>
+                        <div class="stat-label">Total Gastado</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Premios Ganados</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">0 ETH</div>
+                        <div class="stat-label">Total Ganado</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">🎫 Mis Tickets Activos</div>
+                <div style="text-align: center; padding: 20px; opacity: 0.6;">
+                    <div style="font-size: 2rem; margin-bottom: 10px;">🎫</div>
+                    <div>No tienes tickets activos</div>
+                    <div style="font-size: 0.9rem; margin-top: 5px;">Compra tu primer ticket para participar</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">⚙️ Configuración</div>
+                <button class="btn btn-secondary" onclick="connectWallet()">Conectar Wallet</button>
+                <button class="btn btn-secondary" onclick="showPage('settings')">Configuración</button>
+                <button class="btn btn-secondary" onclick="showHelp()">Ayuda</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="showPage('home')">
+            <div class="nav-icon">🏠</div>
+            <div class="nav-label">Inicio</div>
+        </div>
+        <div class="nav-item" onclick="showPage('lottery')">
+            <div class="nav-icon">🎲</div>
+            <div class="nav-label">Lotería</div>
+        </div>
+        <div class="nav-item" onclick="showPage('results')">
+            <div class="nav-icon">🏆</div>
+            <div class="nav-label">Resultados</div>
+        </div>
+        <div class="nav-item" onclick="showPage('profile')">
+            <div class="nav-icon">👤</div>
+            <div class="nav-label">Perfil</div>
+        </div>
+    </div>
+
+    <script>
+        let selectedNumbers = [];
+        const maxNumbers = 5;
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            generateNumberGrid();
+            updateSelectedDisplay();
+        });
+
+        // Navigation
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+            
+            // Update navigation
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Find and activate the corresponding nav item
+            const navItems = document.querySelectorAll('.nav-item');
+            const pageMap = {
+                'home': 0,
+                'lottery': 1,
+                'results': 2,
+                'profile': 3
+            };
+            
+            if (pageMap[pageId] !== undefined) {
+                navItems[pageMap[pageId]].classList.add('active');
+            }
+        }
+
+        // Generate number grid
+        function generateNumberGrid() {
+            const grid = document.getElementById('numberGrid');
+            grid.innerHTML = '';
+            
+            for (let i = 1; i <= 50; i++) {
+                const numberDiv = document.createElement('div');
+                numberDiv.className = 'lottery-card';
+                numberDiv.style.cursor = 'pointer';
+                numberDiv.innerHTML = `
+                    <div class="lottery-number" style="font-size: 1.5rem;">${i}</div>
+                `;
+                
+                numberDiv.onclick = () => selectNumber(i);
+                grid.appendChild(numberDiv);
+            }
+        }
+
+        // Select number
+        function selectNumber(number) {
+            if (selectedNumbers.includes(number)) {
+                // Deselect
+                selectedNumbers = selectedNumbers.filter(n => n !== number);
+            } else if (selectedNumbers.length < maxNumbers) {
+                // Select
+                selectedNumbers.push(number);
+            }
+            
+            updateSelectedDisplay();
+            updateNumberGrid();
+        }
+
+        // Update selected numbers display
+        function updateSelectedDisplay() {
+            const countElement = document.getElementById('selectedCount');
+            const numbersElement = document.getElementById('selectedNumbers');
+            const buyButton = document.getElementById('buyButton');
+            
+            countElement.textContent = `${selectedNumbers.length}/${maxNumbers}`;
+            
+            if (selectedNumbers.length > 0) {
+                numbersElement.innerHTML = selectedNumbers.map(num => 
+                    `<span style="display: inline-block; background: #FF6B35; color: white; padding: 5px 10px; border-radius: 10px; margin: 2px; font-weight: bold;">${num}</span>`
+                ).join('');
+            } else {
+                numbersElement.innerHTML = '<span style="opacity: 0.6;">Ningún número seleccionado</span>';
+            }
+            
+            buyButton.disabled = selectedNumbers.length !== maxNumbers;
+            buyButton.textContent = selectedNumbers.length === maxNumbers ? 
+                `Comprar Ticket (0.1 ETH)` : 
+                `Selecciona ${maxNumbers - selectedNumbers.length} números más`;
+        }
+
+        // Update number grid visual state
+        function updateNumberGrid() {
+            const numberElements = document.querySelectorAll('#numberGrid .lottery-card');
+            numberElements.forEach((element, index) => {
+                const number = index + 1;
+                if (selectedNumbers.includes(number)) {
+                    element.style.background = 'linear-gradient(135deg, #FF6B35, #FF8C42)';
+                    element.style.color = 'white';
+                    element.style.transform = 'scale(1.1)';
+                } else {
+                    element.style.background = 'linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(255, 107, 53, 0.05))';
+                    element.style.color = '#FF6B35';
+                    element.style.transform = 'scale(1)';
+                }
+            });
+        }
+
+        // Buy ticket
+        function buyTicket() {
+            if (selectedNumbers.length !== maxNumbers) {
+                alert('Debes seleccionar exactamente 5 números');
+                return;
+            }
+            
+            // Simulate API call
+            const loadingBtn = document.getElementById('buyButton');
+            const originalText = loadingBtn.textContent;
+            loadingBtn.textContent = 'Procesando...';
+            loadingBtn.disabled = true;
+            
+            setTimeout(() => {
+                alert(`¡Ticket comprado exitosamente!\nNúmeros: ${selectedNumbers.join(', ')}\nPrecio: 0.1 ETH`);
+                
+                // Reset
+                selectedNumbers = [];
+                updateSelectedDisplay();
+                updateNumberGrid();
+                
+                loadingBtn.textContent = originalText;
+                loadingBtn.disabled = false;
+                
+                // Show home page
+                showPage('home');
+            }, 2000);
+        }
+
+        // Connect wallet
+        function connectWallet() {
+            alert('Función de conexión de wallet en desarrollo');
+        }
+
+        // Show help
+        function showHelp() {
+            alert('KoquiFI Lottery - Ayuda\n\n1. Selecciona 5 números únicos del 1 al 50\n2. Compra tu ticket con 0.1 ETH\n3. Espera al sorteo del lunes\n4. ¡Gana premios increíbles!\n\nEl sorteo se realiza cada lunes a las 20:00 UTC');
+        }
+    </script>
+</body>
+</html>
