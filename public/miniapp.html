@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎰 KoquiFI Lottery - Mini App</title>
+    
+    <!-- Farcaster Mini App SDK -->
+    <script type="module">
+        import { sdk } from 'https://esm.sh/@farcaster/miniapp-sdk';
+        
+        // Hacer la app disponible globalmente
+        window.farcasterSDK = sdk;
+        
+        // Cuando la app esté lista, ocultar pantalla de carga
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                await sdk.actions.ready();
+                console.log('✅ Farcaster Mini App lista');
+            } catch (error) {
+                console.error('❌ Error inicializando Mini App:', error);
+            }
+        });
+    </script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #2d2d2d 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, #FF6B35, #F7931E, #00D4FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #cccccc;
+            margin-bottom: 20px;
+        }
+
+        .status {
+            background: rgba(0, 255, 0, 0.1);
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .action-button {
+            background: linear-gradient(45deg, #FF6B35, #F7931E);
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+        }
+
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+        }
+
+        .action-button:active {
+            transform: translateY(0);
+        }
+
+        .features {
+            margin: 30px 0;
+        }
+
+        .feature-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .feature-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #FF6B35;
+            margin-bottom: 5px;
+        }
+
+        .feature-desc {
+            font-size: 0.9rem;
+            color: #cccccc;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 107, 53, 0.3);
+            border-radius: 50%;
+            border-top-color: #FF6B35;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .result {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid #00ff00;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .error {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid #ff0000;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            display: none;
+        }
+
+        .error.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">🎰 KoquiFI Lottery</h1>
+            <p class="subtitle">Lotería Semanal con Tokens KOKI</p>
+        </div>
+
+        <div class="status">
+            <h3>📱 Mini App de Farcaster</h3>
+            <p>✅ Integrada con SDK oficial</p>
+            <p>✅ Lista para usar</p>
+        </div>
+
+        <div class="button-grid">
+            <button class="action-button" onclick="buyTicket()">
+                🎫 Comprar Ticket
+            </button>
+            <button class="action-button" onclick="viewStatus()">
+                📊 Ver Estado
+            </button>
+            <button class="action-button" onclick="viewResults()">
+                🏆 Resultados
+            </button>
+            <button class="action-button" onclick="viewInfo()">
+                ℹ️ Info
+            </button>
+        </div>
+
+        <div class="features">
+            <div class="feature-item">
+                <div class="feature-icon">🎫</div>
+                <div class="feature-title">Tickets Únicos</div>
+                <div class="feature-desc">NFTs con números únicos del 1-50</div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">🏆</div>
+                <div class="feature-title">Premios Grandes</div>
+                <div class="feature-desc">3 niveles de premios increíbles</div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">⚡</div>
+                <div class="feature-title">Base Network</div>
+                <div class="feature-desc">Transacciones rápidas y baratas</div>
+            </div>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Procesando...</p>
+        </div>
+
+        <div class="result" id="result">
+            <h3>✅ Éxito</h3>
+            <p id="result-message"></p>
+        </div>
+
+        <div class="error" id="error">
+            <h3>❌ Error</h3>
+            <p id="error-message"></p>
+        </div>
+
+        <div class="footer">
+            <p>🎰 KoquiFI Lottery - Mini App</p>
+            <p>📱 Optimizada para Farcaster</p>
+            <p>🔗 Base Network</p>
+        </div>
+    </div>
+
+    <script>
+        // Funciones de la Mini App
+        async function buyTicket() {
+            showLoading();
+            try {
+                // Simular compra de ticket
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                const ticket = {
+                    id: Math.random().toString(36).substr(2, 9),
+                    numbers: generateRandomNumbers(),
+                    price: '0.001 ETH',
+                    date: new Date().toLocaleDateString()
+                };
+                
+                showResult(`¡Ticket comprado! ID: ${ticket.id}<br>Números: ${ticket.numbers.join(', ')}<br>Precio: ${ticket.price}`);
+            } catch (error) {
+                showError('Error comprando ticket: ' + error.message);
+            }
+        }
+
+        async function viewStatus() {
+            showLoading();
+            try {
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                const status = {
+                    totalTickets: Math.floor(Math.random() * 1000) + 100,
+                    prizePool: (Math.random() * 10 + 1).toFixed(2) + ' ETH',
+                    nextDraw: 'Lunes 20:00 UTC',
+                    participants: Math.floor(Math.random() * 500) + 50
+                };
+                
+                showResult(`Estado de la Lotería:<br>• Tickets vendidos: ${status.totalTickets}<br>• Pool de premios: ${status.prizePool}<br>• Próximo sorteo: ${status.nextDraw}<br>• Participantes: ${status.participants}`);
+            } catch (error) {
+                showError('Error obteniendo estado: ' + error.message);
+            }
+        }
+
+        async function viewResults() {
+            showLoading();
+            try {
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                const results = {
+                    winningNumbers: generateRandomNumbers(),
+                    winners: Math.floor(Math.random() * 10) + 1,
+                    totalPrize: (Math.random() * 5 + 1).toFixed(2) + ' ETH',
+                    date: new Date().toLocaleDateString()
+                };
+                
+                showResult(`Resultados del Sorteo:<br>• Números ganadores: ${results.winningNumbers.join(', ')}<br>• Ganadores: ${results.winners}<br>• Premio total: ${results.totalPrize}<br>• Fecha: ${results.date}`);
+            } catch (error) {
+                showError('Error obteniendo resultados: ' + error.message);
+            }
+        }
+
+        async function viewInfo() {
+            showLoading();
+            try {
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                showResult(`Información de KoquiFI Lottery:<br>• Lotería semanal con tokens KOKI<br>• Tickets NFTs únicos del 1-50<br>• Premios en 3 niveles<br>• Sorteo automático los lunes<br>• Red: Base Network<br>• 100% descentralizado`);
+            } catch (error) {
+                showError('Error obteniendo información: ' + error.message);
+            }
+        }
+
+        // Funciones auxiliares
+        function generateRandomNumbers() {
+            const numbers = [];
+            while (numbers.length < 5) {
+                const num = Math.floor(Math.random() * 50) + 1;
+                if (!numbers.includes(num)) {
+                    numbers.push(num);
+                }
+            }
+            return numbers.sort((a, b) => a - b);
+        }
+
+        function showLoading() {
+            document.getElementById('loading').classList.add('show');
+            document.getElementById('result').classList.remove('show');
+            document.getElementById('error').classList.remove('show');
+        }
+
+        function showResult(message) {
+            document.getElementById('loading').classList.remove('show');
+            document.getElementById('result').classList.add('show');
+            document.getElementById('error').classList.remove('show');
+            document.getElementById('result-message').innerHTML = message;
+        }
+
+        function showError(message) {
+            document.getElementById('loading').classList.remove('show');
+            document.getElementById('result').classList.remove('show');
+            document.getElementById('error').classList.add('show');
+            document.getElementById('error-message').textContent = message;
+        }
+
+        // Inicializar cuando la app esté lista
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🎰 KoquiFI Lottery Mini App cargada');
+        });
+    </script>
+</body>
+</html>

@@ -64,7 +64,7 @@ app.get('/.well-known/manifest.json', (req, res) => {
         "short_name": "KoquiFI",
         "description": "Lotería semanal con tokens KOKI en Base Network",
         "icon": "https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/main?w=512&h=512",
-        "start_url": "https://koquifi-farcaster-frame-815l.vercel.app/",
+        "start_url": "https://koquifi-farcaster-frame-815l.vercel.app/miniapp.html",
         "display": "standalone",
         "theme_color": "#FF6B35",
         "background_color": "#1A1A1A",
@@ -83,7 +83,7 @@ app.get('/.well-known/manifest.json', (req, res) => {
         "protocol_handlers": [
             {
                 "protocol": "web+koquifi",
-                "url": "https://koquifi-farcaster-frame-815l.vercel.app/?action=%s"
+                "url": "https://koquifi-farcaster-frame-815l.vercel.app/miniapp.html?action=%s"
             }
         ],
         "screenshots": [
@@ -94,7 +94,12 @@ app.get('/.well-known/manifest.json', (req, res) => {
             }
         ],
         "related_applications": [],
-        "prefer_related_applications": false
+        "prefer_related_applications": false,
+        "farcaster": {
+            "mini_app": true,
+            "version": "1.0.0",
+            "sdk_version": "latest"
+        }
     };
     
     res.json(manifest);
