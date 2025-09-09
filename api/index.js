@@ -28,6 +28,11 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Servir archivos estáticos
 app.use(express.static('public'));
 
+// Ruta principal - servir el Frame HTML
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '../public/index.html'));
+});
+
 // Rutas de la API
 app.use('/api/frame', frameRoutes);
 
@@ -86,7 +91,13 @@ app.use((err, req, res, next) => {
 
 // Manejo de rutas no encontradas
 app.use('*', (req, res) => {
-    res.status(404).json({ error: 'Endpoint no encontrado' });
+    // Si es una ruta de API, devolver JSON
+    if (req.originalUrl.startsWith('/api/')) {
+        res.status(404).json({ error: 'API endpoint no encontrado' });
+    } else {
+        // Para otras rutas, servir el Frame HTML
+        res.sendFile(path.join(__dirname, '../public/index.html'));
+    }
 });
 
 module.exports = app;
