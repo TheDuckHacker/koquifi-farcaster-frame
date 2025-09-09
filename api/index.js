@@ -53,7 +53,24 @@ app.get('/.well-known/manifest.json', (req, res) => {
     res.setHeader('Content-Type', 'application/manifest+json');
     res.setHeader('Cache-Control', 'public, max-age=3600');
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.sendFile(path.join(__dirname, '../public/.well-known/manifest.json'));
+    
+    // Leer y enviar el manifest como JSON
+    const manifest = {
+        "name": "KoquiFI Lottery",
+        "short_name": "KoquiFI",
+        "description": "Lotería semanal con tokens KOKI en Base Network",
+        "icon": "https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/main?w=512&h=512",
+        "start_url": "https://koquifi-farcaster-frame-815l.vercel.app/",
+        "display": "standalone",
+        "theme_color": "#FF6B35",
+        "background_color": "#1A1A1A",
+        "categories": ["finance", "games", "social"],
+        "scope": "/",
+        "lang": "es",
+        "dir": "ltr"
+    };
+    
+    res.json(manifest);
 });
 
 // Ruta principal - servir el Frame HTML
