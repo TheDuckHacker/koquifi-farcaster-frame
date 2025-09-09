@@ -15,17 +15,10 @@
     {
       "source": "/.well-known/(.*)",
       "destination": "/api/index.js"
-    }
-  ],
-  "headers": [
+    },
     {
       "source": "/farcaster.json",
-      "headers": [
-        {
-          "key": "Content-Type",
-          "value": "application/json"
-        }
-      ]
+      "destination": "/api/index.js"
     }
   ]
 }
