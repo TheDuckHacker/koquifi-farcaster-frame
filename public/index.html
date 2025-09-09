@@ -3,202 +3,603 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KoquiFI Lottery - Lotería Semanal en Base</title>
+    <title>🎰 KoquiFI Lottery - Lotería Semanal en Base</title>
     
-                <!-- Frame Meta Tags para Farcaster -->
-                <meta property="fc:frame" content="vNext" />
-                <meta property="fc:frame:image" content="https://koquifi-frame.vercel.app/api/frame/image/main" />
-                <meta property="fc:frame:image:aspect_ratio" content="1.91:1" />
-                <meta property="fc:frame:button:1" content="🎫 Comprar Ticket" />
-                <meta property="fc:frame:button:2" content="📊 Ver Estado" />
-                <meta property="fc:frame:button:3" content="🏆 Resultados" />
-                <meta property="fc:frame:button:4" content="ℹ️ Info" />
-                <meta property="fc:frame:post_url" content="https://koquifi-frame.vercel.app/api/frame/interact" />
+    <!-- Frame Meta Tags para Farcaster -->
+    <meta property="fc:frame" content="vNext" />
+    <meta property="fc:frame:image" content="https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/main" />
+    <meta property="fc:frame:image:aspect_ratio" content="1.91:1" />
+    <meta property="fc:frame:button:1" content="🎫 Comprar Ticket" />
+    <meta property="fc:frame:button:2" content="📊 Ver Estado" />
+    <meta property="fc:frame:button:3" content="🏆 Resultados" />
+    <meta property="fc:frame:button:4" content="ℹ️ Info" />
+    <meta property="fc:frame:post_url" content="https://koquifi-farcaster-frame-815l.vercel.app/api/frame/interact" />
     
     <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="KoquiFI Lottery - Lotería Semanal en Base" />
+    <meta property="og:title" content="🎰 KoquiFI Lottery - Lotería Semanal en Base" />
     <meta property="og:description" content="Participa en la lotería semanal con tokens KOKI. ¡Gana premios increíbles cada lunes!" />
-    <meta property="og:image" content="https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?w=1200&h=630&fit=crop&crop=center" />
-    <meta property="og:url" content="https://koquifi-frame.vercel.app" />
+    <meta property="og:image" content="https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/main" />
+    <meta property="og:url" content="https://koquifi-farcaster-frame-815l.vercel.app" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="KoquiFI Lottery" />
     
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="KoquiFI Lottery - Lotería Semanal en Base" />
+    <meta name="twitter:title" content="🎰 KoquiFI Lottery - Lotería Semanal en Base" />
     <meta name="twitter:description" content="Participa en la lotería semanal con tokens KOKI. ¡Gana premios increíbles cada lunes!" />
-    <meta name="twitter:image" content="https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?w=1200&h=630&fit=crop&crop=center" />
+    <meta name="twitter:image" content="https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/main" />
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="/images/icon.png" />
     
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap');
+        
+        * {
             margin: 0;
-            padding: 20px;
-            background: linear-gradient(135deg, #1A1A1A 0%, #2D2D2D 100%);
-            color: #FFFFFF;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Exo 2', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            overflow-x: hidden;
+            position: relative;
         }
         
+        /* Estrellas animadas de fondo */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s infinite;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+        
+        /* Contenedor principal */
         .container {
-            max-width: 600px;
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
             text-align: center;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 40px;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
-        .logo {
-            font-size: 3rem;
-            margin-bottom: 20px;
+        /* Título principal con efecto neon */
+        .main-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 4rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, #ff6b35, #f7931e, #ffd700, #ff6b35);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease-in-out infinite, glow 2s ease-in-out infinite alternate;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 30px rgba(255, 107, 53, 0.5);
         }
         
-        h1 {
-            color: #FF6B35;
-            margin-bottom: 10px;
-            font-size: 2.5rem;
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        @keyframes glow {
+            from { text-shadow: 0 0 20px rgba(255, 107, 53, 0.5), 0 0 30px rgba(255, 107, 53, 0.3); }
+            to { text-shadow: 0 0 30px rgba(255, 107, 53, 0.8), 0 0 40px rgba(255, 107, 53, 0.5); }
         }
         
         .subtitle {
-            color: #CCCCCC;
-            font-size: 1.2rem;
-            margin-bottom: 30px;
+            font-size: 1.5rem;
+            color: #00d4ff;
+            margin-bottom: 2rem;
+            font-weight: 600;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
         }
         
         .description {
-            color: #AAAAAA;
+            font-size: 1.1rem;
+            color: #e0e0e0;
+            margin-bottom: 3rem;
             line-height: 1.6;
-            margin-bottom: 30px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
         }
         
-        .features {
+        /* Grid de características con efectos 3D */
+        .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin: 30px 0;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
         }
         
-        .feature {
-            background: rgba(255, 107, 53, 0.1);
-            padding: 20px;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 107, 53, 0.3);
+        .feature-card {
+            background: linear-gradient(145deg, #1e1e2e, #2a2a3e);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            position: relative;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            overflow: hidden;
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, #ff6b35, #00d4ff, #ffd700, #ff6b35);
+            border-radius: 20px;
+            padding: 2px;
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(0, 212, 255, 0.3);
+        }
+        
+        .feature-card:hover::before {
+            opacity: 1;
         }
         
         .feature-icon {
-            font-size: 2rem;
-            margin-bottom: 10px;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
         }
         
         .feature-title {
-            color: #FF6B35;
-            font-weight: bold;
-            margin-bottom: 5px;
+            font-family: 'Orbitron', monospace;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #ffd700;
+            margin-bottom: 0.5rem;
         }
         
-        .instructions {
-            background: rgba(0, 255, 0, 0.1);
-            padding: 20px;
-            border-radius: 10px;
-            border: 1px solid rgba(0, 255, 0, 0.3);
-            margin-top: 30px;
-        }
-        
-        .instructions h3 {
-            color: #00FF00;
-            margin-bottom: 15px;
-        }
-        
-        .instructions ol {
-            text-align: left;
-            color: #CCCCCC;
-        }
-        
-        .instructions li {
-            margin-bottom: 8px;
-        }
-        
-        .footer {
-            margin-top: 40px;
-            color: #888888;
+        .feature-description {
+            color: #b0b0b0;
             font-size: 0.9rem;
+            line-height: 1.4;
         }
         
-        .network-badge {
-            display: inline-block;
-            background: #0052FF;
+        /* Sección de instrucciones con efecto de partículas */
+        .instructions {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(255, 107, 53, 0.1));
+            border-radius: 25px;
+            padding: 3rem;
+            margin: 3rem 0;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .instructions::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 212, 255, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .instructions h2 {
+            font-family: 'Orbitron', monospace;
+            font-size: 2.5rem;
+            color: #00d4ff;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .steps-list {
+            list-style: none;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .steps-list li {
+            background: linear-gradient(90deg, rgba(255, 107, 53, 0.2), rgba(0, 212, 255, 0.2));
+            margin: 1rem 0;
+            padding: 1.5rem;
+            border-radius: 15px;
+            border-left: 4px solid #ff6b35;
+            font-size: 1.1rem;
+            color: #e0e0e0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .steps-list li:hover {
+            transform: translateX(10px);
+            background: linear-gradient(90deg, rgba(255, 107, 53, 0.3), rgba(0, 212, 255, 0.3));
+        }
+        
+        /* Botones interactivos con efectos */
+        .interactive-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 3rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .interactive-btn {
+            background: linear-gradient(45deg, #ff6b35, #f7931e);
+            border: none;
+            border-radius: 50px;
+            padding: 1rem 2rem;
             color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            margin: 10px 5px;
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .interactive-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .interactive-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(255, 107, 53, 0.4);
+        }
+        
+        .interactive-btn:hover::before {
+            left: 100%;
+        }
+        
+        .interactive-btn:active {
+            transform: translateY(-1px) scale(1.02);
+        }
+        
+        /* Footer con efectos */
+        .footer {
+            margin-top: 4rem;
+            padding: 2rem;
+            border-top: 1px solid rgba(0, 212, 255, 0.3);
+            position: relative;
+        }
+        
+        .footer-text {
+            color: #888;
+            font-size: 0.9rem;
+            margin: 0.5rem 0;
+            animation: fadeInUp 1s ease-out;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Efectos de partículas flotantes */
+        .floating-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #00d4ff;
+            border-radius: 50%;
+            animation: float 6s infinite linear;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 2.5rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .interactive-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .instructions {
+                padding: 2rem 1rem;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Estrellas de fondo -->
+    <div class="stars" id="stars"></div>
+    
+    <!-- Partículas flotantes -->
+    <div class="floating-particles" id="particles"></div>
+    
     <div class="container">
-        <div class="logo">🎰</div>
-        <h1>KoquiFI Lottery</h1>
+        <h1 class="main-title">🎰 KoquiFI Lottery</h1>
         <p class="subtitle">Lotería Semanal con Tokens KOKI</p>
-        
         <p class="description">
             Participa en la lotería semanal más emocionante de Base Network. 
             Compra tickets con tokens KOKI y gana premios increíbles cada lunes.
         </p>
         
-        <div class="features">
-            <div class="feature">
+        <div class="features-grid">
+            <div class="feature-card" onclick="animateCard(this)">
                 <div class="feature-icon">🎫</div>
-                <div class="feature-title">Tickets Únicos</div>
-                <div>NFTs con números únicos del 1-50</div>
+                <h3 class="feature-title">Tickets Únicos</h3>
+                <p class="feature-description">NFTs con números únicos del 1-50</p>
             </div>
-            <div class="feature">
+            
+            <div class="feature-card" onclick="animateCard(this)">
                 <div class="feature-icon">🏆</div>
-                <div class="feature-title">Premios Grandes</div>
-                <div>3 niveles de premios</div>
+                <h3 class="feature-title">Premios Grandes</h3>
+                <p class="feature-description">3 niveles de premios increíbles</p>
             </div>
-            <div class="feature">
+            
+            <div class="feature-card" onclick="animateCard(this)">
                 <div class="feature-icon">⚡</div>
-                <div class="feature-title">Base Network</div>
-                <div>Transacciones rápidas y baratas</div>
+                <h3 class="feature-title">Base Network</h3>
+                <p class="feature-description">Transacciones rápidas y baratas</p>
             </div>
-            <div class="feature">
+            
+            <div class="feature-card" onclick="animateCard(this)">
                 <div class="feature-icon">🔒</div>
-                <div class="feature-title">100% Descentralizado</div>
-                <div>Contratos verificados</div>
+                <h3 class="feature-title">100% Descentralizado</h3>
+                <p class="feature-description">Contratos verificados y seguros</p>
             </div>
         </div>
         
         <div class="instructions">
-            <h3>🚀 Cómo Participar</h3>
-            <ol>
-                <li>Conecta tu billetera a Base Network</li>
-                <li>Obtén tokens KOKI en el DEX</li>
-                <li>Compra tu ticket con 5 números únicos</li>
-                <li>Espera al sorteo del lunes</li>
-                <li>¡Gana premios increíbles!</li>
+            <h2>🚀 Cómo Participar</h2>
+            <ol class="steps-list">
+                <li onclick="highlightStep(this)">Conecta tu billetera a Base Network</li>
+                <li onclick="highlightStep(this)">Obtén tokens KOKI en el DEX</li>
+                <li onclick="highlightStep(this)">Compra tu ticket con 5 números únicos</li>
+                <li onclick="highlightStep(this)">Espera al sorteo del lunes</li>
+                <li onclick="highlightStep(this)">¡Gana premios increíbles!</li>
             </ol>
         </div>
         
-        <div>
-            <span class="network-badge">Base Network</span>
-            <span class="network-badge">KOKI Token</span>
-            <span class="network-badge">NFT Tickets</span>
+        <div class="interactive-buttons">
+            <button class="interactive-btn" onclick="simulateAction('Base Network')">
+                🌐 Base Network
+            </button>
+            <button class="interactive-btn" onclick="simulateAction('KOKI Token')">
+                🪙 KOKI Token
+            </button>
+            <button class="interactive-btn" onclick="simulateAction('NFT Tickets')">
+                🎫 NFT Tickets
+            </button>
         </div>
         
         <div class="footer">
-            <p>🎯 Interactúa con los botones del Frame para comenzar</p>
-            <p>📱 Optimizado para Farcaster</p>
-            <p>🔗 Contratos verificados en BaseScan</p>
+            <p class="footer-text">🎯 Interactúa con los botones del Frame para comenzar</p>
+            <p class="footer-text">📱 Optimizado para Farcaster</p>
+            <p class="footer-text">🔗 Contratos verificados en BaseScan</p>
         </div>
     </div>
+    
+    <script>
+        // Crear estrellas animadas
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const numStars = 100;
+            
+            for (let i = 0; i < numStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = Math.random() * 3 + 1 + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = Math.random() * 2 + 's';
+                star.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+        
+        // Crear partículas flotantes
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const numParticles = 20;
+            
+            for (let i = 0; i < numParticles; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 4) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Animar tarjetas
+        function animateCard(card) {
+            card.style.transform = 'translateY(-15px) scale(1.1)';
+            card.style.boxShadow = '0 25px 50px rgba(0, 212, 255, 0.5)';
+            
+            setTimeout(() => {
+                card.style.transform = 'translateY(-10px) scale(1.05)';
+                card.style.boxShadow = '0 20px 40px rgba(0, 212, 255, 0.3)';
+            }, 200);
+        }
+        
+        // Resaltar pasos
+        function highlightStep(step) {
+            step.style.background = 'linear-gradient(90deg, rgba(255, 107, 53, 0.4), rgba(0, 212, 255, 0.4))';
+            step.style.transform = 'translateX(15px) scale(1.02)';
+            step.style.borderLeftColor = '#ffd700';
+            
+            setTimeout(() => {
+                step.style.background = 'linear-gradient(90deg, rgba(255, 107, 53, 0.2), rgba(0, 212, 255, 0.2))';
+                step.style.transform = 'translateX(10px)';
+                step.style.borderLeftColor = '#ff6b35';
+            }, 1000);
+        }
+        
+        // Simular acciones de botones
+        function simulateAction(action) {
+            const btn = event.target;
+            btn.style.transform = 'translateY(-5px) scale(1.1)';
+            btn.style.background = 'linear-gradient(45deg, #00d4ff, #ff6b35)';
+            
+            // Mostrar mensaje
+            const message = document.createElement('div');
+            message.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: linear-gradient(45deg, #ff6b35, #00d4ff);
+                color: white;
+                padding: 1rem 2rem;
+                border-radius: 50px;
+                font-family: 'Orbitron', monospace;
+                font-weight: 700;
+                z-index: 1000;
+                animation: popIn 0.5s ease-out;
+            `;
+            message.textContent = `🎉 ${action} activado!`;
+            document.body.appendChild(message);
+            
+            setTimeout(() => {
+                btn.style.transform = 'translateY(-3px) scale(1.05)';
+                btn.style.background = 'linear-gradient(45deg, #ff6b35, #f7931e)';
+                message.remove();
+            }, 2000);
+        }
+        
+        // Efecto de entrada
+        window.addEventListener('load', () => {
+            createStars();
+            createParticles();
+            
+            // Animar elementos al cargar
+            const elements = document.querySelectorAll('.feature-card, .steps-list li, .interactive-btn');
+            elements.forEach((el, index) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(50px)';
+                
+                setTimeout(() => {
+                    el.style.transition = 'all 0.6s ease-out';
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+        
+        // Efecto de scroll
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallax = document.querySelector('.stars');
+            const speed = scrolled * 0.5;
+            parallax.style.transform = `translateY(${speed}px)`;
+        });
+    </script>
+    
+    <style>
+        @keyframes popIn {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 0;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.2);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+    </style>
 </body>
 </html>
