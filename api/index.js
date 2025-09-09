@@ -118,10 +118,40 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
+// Webhook para Farcaster Mini App
+app.post('/api/webhook', (req, res) => {
+    try {
+        console.log('Webhook recibido:', req.body);
+        
+        const { type, data } = req.body;
+        
+        switch (type) {
+            case 'user.install':
+                console.log('Usuario instaló la app:', data);
+                break;
+            case 'user.uninstall':
+                console.log('Usuario desinstaló la app:', data);
+                break;
+            case 'user.open':
+                console.log('Usuario abrió la app:', data);
+                break;
+            case 'user.close':
+                console.log('Usuario cerró la app:', data);
+                break;
+            default:
+                console.log('Evento desconocido:', type, data);
+        }
+        
+        res.json({ success: true, message: 'Webhook procesado' });
+    } catch (error) {
+        console.error('Error en webhook:', error);
+        res.status(500).json({ error: 'Error procesando webhook' });
+    }
+});
+
 // Rutas de la API
 app.use('/api/frame', frameRoutes);
 app.use('/api/admin', adminRoutes);
-app.use('/api', require('../src/routes/webhook'));
 
 // Health check endpoint
 app.get('/health', (req, res) => {
