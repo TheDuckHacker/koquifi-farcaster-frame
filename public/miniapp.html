@@ -12,7 +12,12 @@
     <meta name="farcaster:mini-app:icon" content="https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/main?w=512&h=512" />
     
     <!-- Farcaster Mini App SDK -->
-    <script src="https://unpkg.com/@farcaster/miniapp-sdk@latest/dist/index.js"></script>
+    <script type="module">
+        import { sdk } from 'https://unpkg.com/@farcaster/miniapp-sdk@latest/dist/index.js';
+        
+        // Hacer sdk disponible globalmente
+        window.sdk = sdk;
+    </script>
     
     <style>
         * {
@@ -704,13 +709,17 @@
         }
 
         // Inicializar SDK de Farcaster
-        function initializeFarcasterSDK() {
-            if (typeof window.sdk !== 'undefined') {
-                // Llamar ready() para ocultar el splash screen
-                window.sdk.actions.ready();
-                console.log('Farcaster SDK inicializado correctamente');
-            } else {
-                console.log('Farcaster SDK no disponible');
+        async function initializeFarcasterSDK() {
+            try {
+                if (typeof window.sdk !== 'undefined') {
+                    // Llamar ready() para ocultar el splash screen
+                    await window.sdk.actions.ready();
+                    console.log('Farcaster SDK inicializado correctamente');
+                } else {
+                    console.log('Farcaster SDK no disponible');
+                }
+            } catch (error) {
+                console.error('Error inicializando Farcaster SDK:', error);
             }
         }
 
@@ -736,8 +745,8 @@
         }
 
         // Inicializar cuando la página esté lista
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeFarcasterSDK();
+        document.addEventListener('DOMContentLoaded', async function() {
+            await initializeFarcasterSDK();
             startCountdown();
         });
     </script>
