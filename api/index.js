@@ -215,6 +215,29 @@ app.get('/api/lottery/results', async (req, res) => {
     }
 });
 
+// Webhook para Farcaster - ARREGLADO
+app.post('/api/webhook', (req, res) => {
+    console.log('Webhook POST recibido:', req.body);
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.status(200).json({ 
+        status: 'ok', 
+        message: 'Webhook recibido correctamente',
+        timestamp: new Date().toISOString()
+    });
+});
+
+// Webhook GET para verificación
+app.get('/api/webhook', (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.status(200).json({ 
+        status: 'ok', 
+        message: 'Webhook endpoint funcionando',
+        timestamp: new Date().toISOString()
+    });
+});
+
 // Manejo de errores global
 app.use((err, req, res, next) => {
     console.error('Error:', err);
