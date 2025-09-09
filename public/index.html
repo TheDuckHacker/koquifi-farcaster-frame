@@ -410,6 +410,63 @@
             }
         }
 
+        /* Estilos para input de wallet */
+        .wallet-input-section {
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(255, 107, 53, 0.05));
+            border: 2px solid rgba(255, 107, 53, 0.3);
+            border-radius: 20px;
+            padding: 25px;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .wallet-input-section h3 {
+            color: #FF6B35;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .wallet-input {
+            width: 100%;
+            max-width: 400px;
+            padding: 15px 20px;
+            border: 2px solid rgba(255, 107, 53, 0.3);
+            border-radius: 15px;
+            background: rgba(26, 26, 26, 0.8);
+            color: #FFFFFF;
+            font-size: 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .wallet-input:focus {
+            outline: none;
+            border-color: #FF6B35;
+            box-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
+        }
+
+        .wallet-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .input-help {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        .frame-button {
+            background: linear-gradient(135deg, #FF6B35, #FF8C42);
+            border: 2px solid #FF6B35;
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.3);
+        }
+
+        .frame-button:hover {
+            background: linear-gradient(135deg, #FF8C42, #FF6B35);
+            box-shadow: 0 12px 35px rgba(255, 107, 53, 0.5);
+            transform: translateY(-3px);
+        }
+
         /* Animación de carga */
         .loading {
             display: inline-block;
@@ -470,6 +527,27 @@
             <p>Los botones del Frame <strong>SOLO aparecen cuando compartes la URL en Farcaster</strong>. En el navegador web solo ves la página informativa.</p>
         </div>
 
+        <div class="wallet-input-section">
+            <h3>💳 Dirección de Wallet (Opcional)</h3>
+            <input type="text" id="wallet-input" placeholder="0x..." class="wallet-input" />
+            <p class="input-help">Ingresa tu dirección de wallet para probar las funciones del Frame</p>
+        </div>
+
+        <div class="button-grid">
+            <button class="action-button frame-button" onclick="handleFrameAction('buy-ticket')">
+                🎫 Comprar Ticket
+            </button>
+            <button class="action-button frame-button" onclick="handleFrameAction('view-status')">
+                📊 Ver Estado
+            </button>
+            <button class="action-button frame-button" onclick="handleFrameAction('view-results')">
+                🏆 Resultados
+            </button>
+            <button class="action-button frame-button" onclick="handleFrameAction('info')">
+                ℹ️ Info
+            </button>
+        </div>
+
         <div class="button-grid">
             <button class="action-button" onclick="testAPI()">
                 🧪 Probar API
@@ -524,6 +602,89 @@
     </div>
 
     <script>
+        // Función para manejar acciones del Frame
+        async function handleFrameAction(action) {
+            const results = document.getElementById('test-results');
+            results.innerHTML = `<div class="frame-status"><div class="loading"></div> Procesando acción: ${action}...</div>`;
+            
+            try {
+                let buttonIndex = 1;
+                switch(action) {
+                    case 'buy-ticket': buttonIndex = 1; break;
+                    case 'view-status': buttonIndex = 2; break;
+                    case 'view-results': buttonIndex = 3; break;
+                    case 'info': buttonIndex = 4; break;
+                }
+                
+                const response = await fetch('/api/frame/interact', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        untrustedData: {
+                            buttonIndex: buttonIndex,
+                            fid: 'web-user',
+                            inputText: document.getElementById('wallet-input')?.value || ''
+                        }
+                    })
+                });
+                
+                const data = await response.json();
+                
+                // Mostrar la imagen del Frame
+                if (data.image) {
+                    results.innerHTML = `
+                        <div class="frame-status">
+                            <h3 class="status-title">✅ ${getActionTitle(action)}</h3>
+                            <img src="${data.image}" style="max-width: 100%; border-radius: 15px; margin: 15px 0;" />
+                            ${data.buttons ? `
+                                <div class="button-grid" style="margin-top: 15px;">
+                                    ${data.buttons.map((btn, i) => `
+                                        <button class="action-button" onclick="handleFrameAction('${getActionFromButton(btn.text)}')">
+                                            ${btn.text}
+                                        </button>
+                                    `).join('')}
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                } else {
+                    results.innerHTML = `
+                        <div class="frame-status">
+                            <h3 class="status-title">✅ ${getActionTitle(action)}</h3>
+                            <p>Acción procesada correctamente</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                results.innerHTML = `
+                    <div class="warning">
+                        <h3>❌ Error en ${getActionTitle(action)}</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        function getActionTitle(action) {
+            switch(action) {
+                case 'buy-ticket': return 'Comprar Ticket';
+                case 'view-status': return 'Ver Estado';
+                case 'view-results': return 'Ver Resultados';
+                case 'info': return 'Información';
+                default: return 'Acción';
+            }
+        }
+
+        function getActionFromButton(buttonText) {
+            if (buttonText.includes('Comprar')) return 'buy-ticket';
+            if (buttonText.includes('Estado')) return 'view-status';
+            if (buttonText.includes('Resultados')) return 'view-results';
+            if (buttonText.includes('Info')) return 'info';
+            return 'buy-ticket';
+        }
+
         async function testAPI() {
             const results = document.getElementById('test-results');
             results.innerHTML = '<div class="frame-status"><div class="loading"></div> Probando API...</div>';
