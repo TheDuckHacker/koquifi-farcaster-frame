@@ -90,12 +90,12 @@ async function handleBuyTicket(userFid) {
         
         return {
             type: 'frame',
-            image: `${process.env.BASE_URL || 'http://localhost:3000'}/api/frame/image/buy?t=${Date.now()}`,
+            image: `https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/buy?t=${Date.now()}`,
             buttons: [
                 { label: '✅ Confirmar Compra', action: 'post_redirect' },
                 { label: '🔙 Volver', action: 'post' }
             ],
-            postUrl: `${process.env.BASE_URL || 'http://localhost:3000'}/api/frame/buy-confirm`,
+            postUrl: `https://koquifi-farcaster-frame-815l.vercel.app/api/frame/buy-confirm`,
             state: { userFid, step: 'confirm' }
         };
     } catch (error) {
@@ -172,14 +172,14 @@ function handleInfo() {
 function getMainFrame() {
     return {
         type: 'frame',
-        image: `${process.env.BASE_URL || 'http://localhost:3000'}/api/frame/image/main?t=${Date.now()}`,
+        image: `https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/main?t=${Date.now()}`,
         buttons: [
             { label: '🎫 Comprar Ticket', action: 'post' },
             { label: '📊 Ver Estado', action: 'post' },
             { label: '🏆 Resultados', action: 'post' },
             { label: 'ℹ️ Info', action: 'post' }
         ],
-        postUrl: `${process.env.BASE_URL || 'http://localhost:3000'}/api/frame/interact`,
+        postUrl: `https://koquifi-farcaster-frame-815l.vercel.app/api/frame/interact`,
         state: { step: 'main' }
     };
 }

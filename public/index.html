@@ -47,6 +47,7 @@
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
+            color: #fff;
         }
         
         /* Estrellas animadas de fondo */
@@ -85,7 +86,7 @@
         /* Título principal con efecto neon */
         .main-title {
             font-family: 'Orbitron', monospace;
-            font-size: 4rem;
+            font-size: clamp(2.5rem, 8vw, 4rem);
             font-weight: 900;
             background: linear-gradient(45deg, #ff6b35, #f7931e, #ffd700, #ff6b35);
             background-size: 400% 400%;
@@ -109,7 +110,7 @@
         }
         
         .subtitle {
-            font-size: 1.5rem;
+            font-size: clamp(1.2rem, 4vw, 1.5rem);
             color: #00d4ff;
             margin-bottom: 2rem;
             font-weight: 600;
@@ -122,7 +123,7 @@
         }
         
         .description {
-            font-size: 1.1rem;
+            font-size: clamp(1rem, 3vw, 1.1rem);
             color: #e0e0e0;
             margin-bottom: 3rem;
             line-height: 1.6;
@@ -134,8 +135,8 @@
         /* Grid de características con efectos 3D */
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
             margin: 3rem 0;
         }
         
@@ -149,6 +150,11 @@
             transition: all 0.3s ease;
             cursor: pointer;
             overflow: hidden;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
         
         .feature-card::before {
@@ -200,6 +206,7 @@
             color: #b0b0b0;
             font-size: 0.9rem;
             line-height: 1.4;
+            text-align: center;
         }
         
         /* Sección de instrucciones con efecto de partículas */
@@ -231,7 +238,7 @@
         
         .instructions h2 {
             font-family: 'Orbitron', monospace;
-            font-size: 2.5rem;
+            font-size: clamp(2rem, 6vw, 2.5rem);
             color: #00d4ff;
             margin-bottom: 2rem;
             position: relative;
@@ -250,7 +257,7 @@
             padding: 1.5rem;
             border-radius: 15px;
             border-left: 4px solid #ff6b35;
-            font-size: 1.1rem;
+            font-size: clamp(1rem, 3vw, 1.1rem);
             color: #e0e0e0;
             transition: all 0.3s ease;
             cursor: pointer;
@@ -265,7 +272,7 @@
         .interactive-buttons {
             display: flex;
             justify-content: center;
-            gap: 2rem;
+            gap: 1rem;
             margin: 3rem 0;
             flex-wrap: wrap;
         }
@@ -278,13 +285,14 @@
             color: white;
             font-family: 'Orbitron', monospace;
             font-weight: 700;
-            font-size: 1rem;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
             cursor: pointer;
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
             text-transform: uppercase;
             letter-spacing: 1px;
+            min-width: 150px;
         }
         
         .interactive-btn::before {
@@ -321,7 +329,7 @@
         
         .footer-text {
             color: #888;
-            font-size: 0.9rem;
+            font-size: clamp(0.8rem, 2.5vw, 0.9rem);
             margin: 0.5rem 0;
             animation: fadeInUp 1s ease-out;
         }
@@ -374,10 +382,10 @@
             }
         }
         
-        /* Responsive */
+        /* Responsive para móviles */
         @media (max-width: 768px) {
-            .main-title {
-                font-size: 2.5rem;
+            .container {
+                padding: 15px;
             }
             
             .features-grid {
@@ -385,14 +393,82 @@
                 gap: 1rem;
             }
             
+            .feature-card {
+                padding: 1.5rem;
+                min-height: 150px;
+            }
+            
             .interactive-buttons {
                 flex-direction: column;
                 align-items: center;
+                gap: 1rem;
+            }
+            
+            .interactive-btn {
+                width: 100%;
+                max-width: 300px;
             }
             
             .instructions {
                 padding: 2rem 1rem;
             }
+            
+            .steps-list li {
+                padding: 1rem;
+                font-size: 0.9rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .main-title {
+                font-size: 2rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .description {
+                font-size: 0.9rem;
+            }
+            
+            .feature-card {
+                padding: 1rem;
+                min-height: 120px;
+            }
+            
+            .feature-icon {
+                font-size: 2rem;
+            }
+            
+            .feature-title {
+                font-size: 1rem;
+            }
+            
+            .feature-description {
+                font-size: 0.8rem;
+            }
+        }
+        
+        /* Animación de entrada */
+        .fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Efecto de scroll suave */
+        html {
+            scroll-behavior: smooth;
         }
     </style>
 </head>
@@ -404,40 +480,40 @@
     <div class="floating-particles" id="particles"></div>
     
     <div class="container">
-        <h1 class="main-title">🎰 KoquiFI Lottery</h1>
-        <p class="subtitle">Lotería Semanal con Tokens KOKI</p>
-        <p class="description">
+        <h1 class="main-title fade-in">🎰 KoquiFI Lottery</h1>
+        <p class="subtitle fade-in">Lotería Semanal con Tokens KOKI</p>
+        <p class="description fade-in">
             Participa en la lotería semanal más emocionante de Base Network. 
             Compra tickets con tokens KOKI y gana premios increíbles cada lunes.
         </p>
         
         <div class="features-grid">
-            <div class="feature-card" onclick="animateCard(this)">
+            <div class="feature-card fade-in" onclick="animateCard(this)">
                 <div class="feature-icon">🎫</div>
                 <h3 class="feature-title">Tickets Únicos</h3>
                 <p class="feature-description">NFTs con números únicos del 1-50</p>
             </div>
             
-            <div class="feature-card" onclick="animateCard(this)">
+            <div class="feature-card fade-in" onclick="animateCard(this)">
                 <div class="feature-icon">🏆</div>
                 <h3 class="feature-title">Premios Grandes</h3>
                 <p class="feature-description">3 niveles de premios increíbles</p>
             </div>
             
-            <div class="feature-card" onclick="animateCard(this)">
+            <div class="feature-card fade-in" onclick="animateCard(this)">
                 <div class="feature-icon">⚡</div>
                 <h3 class="feature-title">Base Network</h3>
                 <p class="feature-description">Transacciones rápidas y baratas</p>
             </div>
             
-            <div class="feature-card" onclick="animateCard(this)">
+            <div class="feature-card fade-in" onclick="animateCard(this)">
                 <div class="feature-icon">🔒</div>
                 <h3 class="feature-title">100% Descentralizado</h3>
                 <p class="feature-description">Contratos verificados y seguros</p>
             </div>
         </div>
         
-        <div class="instructions">
+        <div class="instructions fade-in">
             <h2>🚀 Cómo Participar</h2>
             <ol class="steps-list">
                 <li onclick="highlightStep(this)">Conecta tu billetera a Base Network</li>
@@ -448,7 +524,7 @@
             </ol>
         </div>
         
-        <div class="interactive-buttons">
+        <div class="interactive-buttons fade-in">
             <button class="interactive-btn" onclick="simulateAction('Base Network')">
                 🌐 Base Network
             </button>
@@ -460,7 +536,7 @@
             </button>
         </div>
         
-        <div class="footer">
+        <div class="footer fade-in">
             <p class="footer-text">🎯 Interactúa con los botones del Frame para comenzar</p>
             <p class="footer-text">📱 Optimizado para Farcaster</p>
             <p class="footer-text">🔗 Contratos verificados en BaseScan</p>
@@ -546,6 +622,7 @@
                 font-weight: 700;
                 z-index: 1000;
                 animation: popIn 0.5s ease-out;
+                font-size: 1.2rem;
             `;
             message.textContent = `🎉 ${action} activado!`;
             document.body.appendChild(message);
@@ -563,7 +640,7 @@
             createParticles();
             
             // Animar elementos al cargar
-            const elements = document.querySelectorAll('.feature-card, .steps-list li, .interactive-btn');
+            const elements = document.querySelectorAll('.fade-in');
             elements.forEach((el, index) => {
                 el.style.opacity = '0';
                 el.style.transform = 'translateY(50px)';
@@ -583,6 +660,16 @@
             const speed = scrolled * 0.5;
             parallax.style.transform = `translateY(${speed}px)`;
         });
+        
+        // Detectar si es móvil
+        function isMobile() {
+            return window.innerWidth <= 768;
+        }
+        
+        // Ajustar animaciones para móvil
+        if (isMobile()) {
+            document.body.style.overflowX = 'hidden';
+        }
     </script>
     
     <style>
