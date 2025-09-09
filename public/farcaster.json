@@ -3,7 +3,7 @@
     "name": "KoquiFI Lottery",
     "version": "1",
     "iconUrl": "https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/main?w=512&h=512",
-    "homeUrl": "https://koquifi-farcaster-frame-815l.vercel.app/app.html",
+    "homeUrl": "https://koquifi-farcaster-frame-815l.vercel.app/miniapp.html",
     "imageUrl": "https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/main?w=1200&h=630",
     "buttonTitle": "Jugar Lotería",
     "splashImageUrl": "https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/main?w=1200&h=630",

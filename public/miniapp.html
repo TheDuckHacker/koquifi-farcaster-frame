@@ -3,26 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎰 KoquiFI Lottery - Mini App</title>
+    <title>🎰 KoquiFI Lottery</title>
+    
+    <!-- Farcaster Mini App Meta Tags -->
+    <meta name="farcaster:mini-app" content="true" />
+    <meta name="farcaster:mini-app:name" content="KoquiFI Lottery" />
+    <meta name="farcaster:mini-app:description" content="Lotería semanal con tokens KOKI en Base Network" />
+    <meta name="farcaster:mini-app:icon" content="https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/main?w=512&h=512" />
     
     <!-- Farcaster Mini App SDK -->
-    <script type="module">
-        import { sdk } from 'https://esm.sh/@farcaster/miniapp-sdk';
-        
-        // Hacer la app disponible globalmente
-        window.farcasterSDK = sdk;
-        
-        // Cuando la app esté lista, ocultar pantalla de carga
-        document.addEventListener('DOMContentLoaded', async () => {
-            try {
-                await sdk.actions.ready();
-                console.log('✅ Farcaster Mini App lista');
-            } catch (error) {
-                console.error('❌ Error inicializando Mini App:', error);
-            }
-        });
-    </script>
-
+    <script src="https://unpkg.com/@farcaster/miniapp-sdk@latest/dist/index.js"></script>
+    
     <style>
         * {
             margin: 0;
@@ -31,342 +22,707 @@
         }
 
         body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #2d2d2d 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
             color: #ffffff;
             min-height: 100vh;
             overflow-x: hidden;
+            padding: 0;
+            margin: 0;
         }
 
-        .container {
-            max-width: 400px;
-            margin: 0 auto;
-            padding: 20px;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
+        /* Header estilo Farcaster */
         .header {
+            background: #000000;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #333;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .app-logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #FF6B35, #FF8C42);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .app-info h1 {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .app-info p {
+            font-size: 12px;
+            color: #888;
+            margin: 0;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 10px;
+        }
+
+        .header-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 20px;
+            padding-bottom: 100px;
+        }
+
+        /* Jackpot Banner */
+        .jackpot-banner {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            border-radius: 20px;
+            padding: 25px;
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
         }
 
-        .title {
-            font-size: 2.5rem;
-            font-weight: 900;
-            background: linear-gradient(45deg, #FF6B35, #F7931E, #00D4FF);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        .jackpot-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="sparkles" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="rgba(255,255,255,0.3)"/></pattern></defs><rect width="100" height="100" fill="url(%23sparkles)"/></svg>');
+            opacity: 0.5;
+        }
+
+        .jackpot-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .jackpot-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #000;
             margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
-        .subtitle {
-            font-size: 1.1rem;
-            color: #cccccc;
+        .jackpot-amount {
+            font-size: 32px;
+            font-weight: bold;
+            color: #000;
+            margin-bottom: 15px;
+        }
+
+        .countdown {
+            background: rgba(0,0,0,0.2);
+            border-radius: 15px;
+            padding: 10px 20px;
+            display: inline-block;
+            color: #000;
+            font-weight: bold;
+        }
+
+        /* Stats Panel */
+        .stats-panel {
+            background: rgba(255, 107, 53, 0.1);
+            border: 1px solid rgba(255, 107, 53, 0.3);
+            border-radius: 20px;
+            padding: 20px;
             margin-bottom: 20px;
         }
 
-        .status {
-            background: rgba(0, 255, 0, 0.1);
-            border: 2px solid #00ff00;
-            border-radius: 10px;
-            padding: 15px;
-            margin: 20px 0;
-            text-align: center;
-        }
-
-        .button-grid {
+        .stats-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
-            margin: 20px 0;
+            margin-bottom: 20px;
         }
 
-        .action-button {
-            background: linear-gradient(45deg, #FF6B35, #F7931E);
-            color: white;
-            border: none;
-            padding: 15px 20px;
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
             border-radius: 10px;
-            font-size: 1rem;
-            font-weight: 600;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .stat-value {
+            font-weight: bold;
+            color: #FF6B35;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 15px 20px;
+            border: none;
+            border-radius: 15px;
+            font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+            font-size: 16px;
         }
 
-        .action-button:hover {
+        .btn-primary {
+            background: linear-gradient(135deg, #FF6B35, #FF8C42);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 107, 53, 0.3);
+        }
+
+        .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.3);
         }
 
-        .action-button:active {
-            transform: translateY(0);
-        }
-
-        .features {
-            margin: 30px 0;
-        }
-
-        .feature-item {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 15px;
-            margin: 10px 0;
+        /* Main Interactive Area */
+        .interactive-area {
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(255, 107, 53, 0.05));
+            border: 2px solid rgba(255, 107, 53, 0.3);
+            border-radius: 25px;
+            padding: 30px;
             text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
         }
 
-        .feature-icon {
-            font-size: 2rem;
+        .lottery-egg {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+            position: relative;
+            box-shadow: 0 15px 35px rgba(255, 215, 0, 0.3);
+        }
+
+        .lottery-egg::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            bottom: 20px;
+            background: linear-gradient(135deg, #FF6B35, #FF8C42);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lottery-egg::after {
+            content: '🎰';
+            position: absolute;
+            z-index: 1;
+            font-size: 60px;
+        }
+
+        .lottery-title {
+            font-size: 24px;
+            font-weight: bold;
             margin-bottom: 10px;
+            color: #FF6B35;
         }
 
-        .feature-title {
-            font-size: 1.1rem;
-            font-weight: 600;
+        .lottery-subtitle {
+            font-size: 16px;
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+
+        /* Number Selection */
+        .number-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .number-btn {
+            width: 50px;
+            height: 50px;
+            border: 2px solid rgba(255, 107, 53, 0.3);
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.05);
             color: #FF6B35;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .number-btn.selected {
+            background: #FF6B35;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .number-btn:hover {
+            border-color: #FF6B35;
+            transform: scale(1.05);
+        }
+
+        /* Side Features */
+        .side-features {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .feature-btn {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #000;
+            font-weight: bold;
+        }
+
+        .feature-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid #333;
+            padding: 10px 0;
+            display: flex;
+            justify-content: space-around;
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 15px;
+            min-width: 60px;
+        }
+
+        .nav-item.active {
+            background: rgba(255, 107, 53, 0.2);
+            transform: scale(1.1);
+        }
+
+        .nav-icon {
+            font-size: 24px;
             margin-bottom: 5px;
         }
 
-        .feature-desc {
-            font-size: 0.9rem;
-            color: #cccccc;
+        .nav-label {
+            font-size: 12px;
+            opacity: 0.8;
         }
 
-        .footer {
-            text-align: center;
-            margin-top: 30px;
-            padding: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        .nav-item.active .nav-label {
+            opacity: 1;
+            color: #FF6B35;
         }
 
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 20px;
-        }
-
-        .loading.show {
-            display: block;
-        }
-
-        .spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255, 107, 53, 0.3);
-            border-radius: 50%;
-            border-top-color: #FF6B35;
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .result {
-            background: rgba(0, 255, 0, 0.1);
-            border: 1px solid #00ff00;
-            border-radius: 10px;
-            padding: 15px;
-            margin: 15px 0;
-            display: none;
-        }
-
-        .result.show {
-            display: block;
-        }
-
-        .error {
-            background: rgba(255, 0, 0, 0.1);
-            border: 1px solid #ff0000;
-            border-radius: 10px;
-            padding: 15px;
-            margin: 15px 0;
-            display: none;
-        }
-
-        .error.show {
-            display: block;
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 15px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1 class="title">🎰 KoquiFI Lottery</h1>
-            <p class="subtitle">Lotería Semanal con Tokens KOKI</p>
-        </div>
-
-        <div class="status">
-            <h3>📱 Mini App de Farcaster</h3>
-            <p>✅ Integrada con SDK oficial</p>
-            <p>✅ Lista para usar</p>
-        </div>
-
-        <div class="button-grid">
-            <button class="action-button" onclick="buyTicket()">
-                🎫 Comprar Ticket
-            </button>
-            <button class="action-button" onclick="viewStatus()">
-                📊 Ver Estado
-            </button>
-            <button class="action-button" onclick="viewResults()">
-                🏆 Resultados
-            </button>
-            <button class="action-button" onclick="viewInfo()">
-                ℹ️ Info
-            </button>
-        </div>
-
-        <div class="features">
-            <div class="feature-item">
-                <div class="feature-icon">🎫</div>
-                <div class="feature-title">Tickets Únicos</div>
-                <div class="feature-desc">NFTs con números únicos del 1-50</div>
+    <!-- Header estilo Farcaster -->
+    <div class="header">
+        <div class="header-left">
+            <button class="close-btn" onclick="closeApp()">×</button>
+            <div class="app-logo">🎰</div>
+            <div class="app-info">
+                <h1>KoquiFI Lottery</h1>
+                <p>by koquifi.eth</p>
             </div>
-            <div class="feature-item">
-                <div class="feature-icon">🏆</div>
-                <div class="feature-title">Premios Grandes</div>
-                <div class="feature-desc">3 niveles de premios increíbles</div>
-            </div>
-            <div class="feature-item">
-                <div class="feature-icon">⚡</div>
-                <div class="feature-title">Base Network</div>
-                <div class="feature-desc">Transacciones rápidas y baratas</div>
+        </div>
+        <div class="header-right">
+            <button class="header-btn">⋯</button>
+            <button class="header-btn">⌄</button>
+            <button class="header-btn">×</button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Jackpot Banner -->
+        <div class="jackpot-banner">
+            <div class="jackpot-content">
+                <div class="jackpot-title">WEEKLY JACKPOT</div>
+                <div class="jackpot-amount">2.5 ETH</div>
+                <div class="countdown">DRAW IN 3D 12H 45M 30S</div>
             </div>
         </div>
 
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
-            <p>Procesando...</p>
+        <!-- Stats Panel -->
+        <div class="stats-panel">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-label">MCAP:</span>
+                    <span class="stat-value">$396.6K</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">TOTAL KOKI:</span>
+                    <span class="stat-value">4.1303</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">YIELD/DAY:</span>
+                    <span class="stat-value">2.25%</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">TICKETS:</span>
+                    <span class="stat-value">1,247</span>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-secondary" onclick="claimTokens()">
+                    CLAIM KOKI (0.206)
+                </button>
+                <button class="btn btn-primary" onclick="buyTicket()">
+                    BUY TICKET
+                </button>
+            </div>
+
+            <div style="text-align: center; margin-top: 15px;">
+                <div style="font-size: 14px; margin-bottom: 10px; color: #FF6B35;">DAILY CLAIM STREAK</div>
+                <div style="display: flex; justify-content: center; gap: 5px;">
+                    <span style="color: #4CAF50;">★</span>
+                    <span style="color: #4CAF50;">★</span>
+                    <span style="color: #4CAF50;">★</span>
+                    <span style="opacity: 0.3;">★</span>
+                    <span style="opacity: 0.3;">★</span>
+                    <span style="opacity: 0.3;">★</span>
+                    <span style="opacity: 0.3;">★</span>
+                </div>
+            </div>
         </div>
 
-        <div class="result" id="result">
-            <h3>✅ Éxito</h3>
-            <p id="result-message"></p>
+        <!-- Main Interactive Area -->
+        <div class="interactive-area">
+            <div class="lottery-egg"></div>
+            <div class="lottery-title">KOKI LOTTERY</div>
+            <div class="lottery-subtitle">Selecciona tus números de la suerte</div>
+            
+            <div class="number-grid" id="numberGrid">
+                <!-- Numbers will be generated by JavaScript -->
+            </div>
+            
+            <div style="margin-top: 20px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                    <span>Números Seleccionados:</span>
+                    <span id="selectedCount">0/5</span>
+                </div>
+                <div id="selectedNumbers" style="margin-bottom: 20px; min-height: 30px;"></div>
+                <button class="btn btn-primary" id="buyButton" onclick="purchaseTicket()" disabled>
+                    COMPRAR TICKET (0.1 ETH)
+                </button>
+            </div>
         </div>
 
-        <div class="error" id="error">
-            <h3>❌ Error</h3>
-            <p id="error-message"></p>
+        <!-- Side Features -->
+        <div class="side-features">
+            <button class="feature-btn" onclick="inviteFriends()">
+                <div style="font-size: 20px;">👥</div>
+                <div style="font-size: 10px;">INVITE</div>
+                <div style="font-size: 10px;">(3/3)</div>
+            </button>
+            <button class="feature-btn" onclick="tipCreator()">
+                <div style="font-size: 20px;">💎</div>
+                <div style="font-size: 10px;">TIP</div>
+                <div style="font-size: 10px;">0</div>
+            </button>
         </div>
+    </div>
 
-        <div class="footer">
-            <p>🎰 KoquiFI Lottery - Mini App</p>
-            <p>📱 Optimizada para Farcaster</p>
-            <p>🔗 Base Network</p>
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="showPage('home')">
+            <div class="nav-icon">🏠</div>
+            <div class="nav-label">Inicio</div>
+        </div>
+        <div class="nav-item" onclick="showPage('lottery')">
+            <div class="nav-icon">🎲</div>
+            <div class="nav-label">Lotería</div>
+        </div>
+        <div class="nav-item" onclick="showPage('results')">
+            <div class="nav-icon">🏆</div>
+            <div class="nav-label">Resultados</div>
+        </div>
+        <div class="nav-item" onclick="showPage('profile')">
+            <div class="nav-icon">👤</div>
+            <div class="nav-label">Perfil</div>
         </div>
     </div>
 
     <script>
-        // Funciones de la Mini App
-        async function buyTicket() {
-            showLoading();
+        // Farcaster Mini App SDK
+        let sdk;
+        let selectedNumbers = [];
+        const maxNumbers = 5;
+
+        // Initialize Farcaster SDK
+        async function initFarcaster() {
             try {
-                // Simular compra de ticket
-                await new Promise(resolve => setTimeout(resolve, 2000));
-                
-                const ticket = {
-                    id: Math.random().toString(36).substr(2, 9),
-                    numbers: generateRandomNumbers(),
-                    price: '0.001 ETH',
-                    date: new Date().toLocaleDateString()
-                };
-                
-                showResult(`¡Ticket comprado! ID: ${ticket.id}<br>Números: ${ticket.numbers.join(', ')}<br>Precio: ${ticket.price}`);
+                sdk = new FarcasterMiniAppSDK();
+                await sdk.ready();
+                console.log('Farcaster SDK initialized');
             } catch (error) {
-                showError('Error comprando ticket: ' + error.message);
+                console.log('Farcaster SDK not available, running in web mode');
             }
         }
 
-        async function viewStatus() {
-            showLoading();
-            try {
-                await new Promise(resolve => setTimeout(resolve, 1500));
-                
-                const status = {
-                    totalTickets: Math.floor(Math.random() * 1000) + 100,
-                    prizePool: (Math.random() * 10 + 1).toFixed(2) + ' ETH',
-                    nextDraw: 'Lunes 20:00 UTC',
-                    participants: Math.floor(Math.random() * 500) + 50
-                };
-                
-                showResult(`Estado de la Lotería:<br>• Tickets vendidos: ${status.totalTickets}<br>• Pool de premios: ${status.prizePool}<br>• Próximo sorteo: ${status.nextDraw}<br>• Participantes: ${status.participants}`);
-            } catch (error) {
-                showError('Error obteniendo estado: ' + error.message);
-            }
-        }
-
-        async function viewResults() {
-            showLoading();
-            try {
-                await new Promise(resolve => setTimeout(resolve, 1500));
-                
-                const results = {
-                    winningNumbers: generateRandomNumbers(),
-                    winners: Math.floor(Math.random() * 10) + 1,
-                    totalPrize: (Math.random() * 5 + 1).toFixed(2) + ' ETH',
-                    date: new Date().toLocaleDateString()
-                };
-                
-                showResult(`Resultados del Sorteo:<br>• Números ganadores: ${results.winningNumbers.join(', ')}<br>• Ganadores: ${results.winners}<br>• Premio total: ${results.totalPrize}<br>• Fecha: ${results.date}`);
-            } catch (error) {
-                showError('Error obteniendo resultados: ' + error.message);
-            }
-        }
-
-        async function viewInfo() {
-            showLoading();
-            try {
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                
-                showResult(`Información de KoquiFI Lottery:<br>• Lotería semanal con tokens KOKI<br>• Tickets NFTs únicos del 1-50<br>• Premios en 3 niveles<br>• Sorteo automático los lunes<br>• Red: Base Network<br>• 100% descentralizado`);
-            } catch (error) {
-                showError('Error obteniendo información: ' + error.message);
-            }
-        }
-
-        // Funciones auxiliares
-        function generateRandomNumbers() {
-            const numbers = [];
-            while (numbers.length < 5) {
-                const num = Math.floor(Math.random() * 50) + 1;
-                if (!numbers.includes(num)) {
-                    numbers.push(num);
-                }
-            }
-            return numbers.sort((a, b) => a - b);
-        }
-
-        function showLoading() {
-            document.getElementById('loading').classList.add('show');
-            document.getElementById('result').classList.remove('show');
-            document.getElementById('error').classList.remove('show');
-        }
-
-        function showResult(message) {
-            document.getElementById('loading').classList.remove('show');
-            document.getElementById('result').classList.add('show');
-            document.getElementById('error').classList.remove('show');
-            document.getElementById('result-message').innerHTML = message;
-        }
-
-        function showError(message) {
-            document.getElementById('loading').classList.remove('show');
-            document.getElementById('result').classList.remove('show');
-            document.getElementById('error').classList.add('show');
-            document.getElementById('error-message').textContent = message;
-        }
-
-        // Inicializar cuando la app esté lista
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('🎰 KoquiFI Lottery Mini App cargada');
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            initFarcaster();
+            generateNumberGrid();
+            updateSelectedDisplay();
+            startCountdown();
         });
+
+        // Generate number grid
+        function generateNumberGrid() {
+            const grid = document.getElementById('numberGrid');
+            grid.innerHTML = '';
+            
+            for (let i = 1; i <= 25; i++) {
+                const numberBtn = document.createElement('div');
+                numberBtn.className = 'number-btn';
+                numberBtn.textContent = i;
+                numberBtn.onclick = () => selectNumber(i);
+                grid.appendChild(numberBtn);
+            }
+        }
+
+        // Select number
+        function selectNumber(number) {
+            if (selectedNumbers.includes(number)) {
+                selectedNumbers = selectedNumbers.filter(n => n !== number);
+            } else if (selectedNumbers.length < maxNumbers) {
+                selectedNumbers.push(number);
+            }
+            
+            updateSelectedDisplay();
+            updateNumberGrid();
+        }
+
+        // Update selected numbers display
+        function updateSelectedDisplay() {
+            const countElement = document.getElementById('selectedCount');
+            const numbersElement = document.getElementById('selectedNumbers');
+            const buyButton = document.getElementById('buyButton');
+            
+            countElement.textContent = `${selectedNumbers.length}/${maxNumbers}`;
+            
+            if (selectedNumbers.length > 0) {
+                numbersElement.innerHTML = selectedNumbers.map(num => 
+                    `<span style="display: inline-block; background: #FF6B35; color: white; padding: 5px 10px; border-radius: 10px; margin: 2px; font-weight: bold;">${num}</span>`
+                ).join('');
+            } else {
+                numbersElement.innerHTML = '<span style="opacity: 0.6;">Ningún número seleccionado</span>';
+            }
+            
+            buyButton.disabled = selectedNumbers.length !== maxNumbers;
+            buyButton.textContent = selectedNumbers.length === maxNumbers ? 
+                `COMPRAR TICKET (0.1 ETH)` : 
+                `SELECCIONA ${maxNumbers - selectedNumbers.length} NÚMEROS MÁS`;
+        }
+
+        // Update number grid visual state
+        function updateNumberGrid() {
+            const numberElements = document.querySelectorAll('#numberGrid .number-btn');
+            numberElements.forEach((element, index) => {
+                const number = index + 1;
+                if (selectedNumbers.includes(number)) {
+                    element.classList.add('selected');
+                } else {
+                    element.classList.remove('selected');
+                }
+            });
+        }
+
+        // Purchase ticket
+        function purchaseTicket() {
+            if (selectedNumbers.length !== maxNumbers) {
+                alert('Debes seleccionar exactamente 5 números');
+                return;
+            }
+            
+            const loadingBtn = document.getElementById('buyButton');
+            const originalText = loadingBtn.textContent;
+            loadingBtn.textContent = 'PROCESANDO...';
+            loadingBtn.disabled = true;
+            
+            setTimeout(() => {
+                alert(`¡Ticket comprado exitosamente!\nNúmeros: ${selectedNumbers.join(', ')}\nPrecio: 0.1 ETH`);
+                
+                // Reset
+                selectedNumbers = [];
+                updateSelectedDisplay();
+                updateNumberGrid();
+                
+                loadingBtn.textContent = originalText;
+                loadingBtn.disabled = false;
+            }, 2000);
+        }
+
+        // Claim tokens
+        function claimTokens() {
+            alert('¡Tokens KOKI reclamados! +0.206 KOKI');
+        }
+
+        // Buy ticket
+        function buyTicket() {
+            showPage('lottery');
+        }
+
+        // Invite friends
+        function inviteFriends() {
+            if (sdk) {
+                sdk.actions.share({
+                    text: '🎰 ¡Únete a KoquiFI Lottery! Lotería semanal con tokens KOKI en Base Network',
+                    url: 'https://koquifi-farcaster-frame-815l.vercel.app/miniapp.html'
+                });
+            } else {
+                alert('Función de invitación disponible en Farcaster');
+            }
+        }
+
+        // Tip creator
+        function tipCreator() {
+            alert('¡Gracias por el tip! 💎');
+        }
+
+        // Close app
+        function closeApp() {
+            if (sdk) {
+                sdk.actions.close();
+            } else {
+                window.close();
+            }
+        }
+
+        // Navigation
+        function showPage(pageId) {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Find and activate the corresponding nav item
+            const navItems = document.querySelectorAll('.nav-item');
+            const pageMap = {
+                'home': 0,
+                'lottery': 1,
+                'results': 2,
+                'profile': 3
+            };
+            
+            if (pageMap[pageId] !== undefined) {
+                navItems[pageMap[pageId]].classList.add('active');
+            }
+        }
+
+        // Countdown timer
+        function startCountdown() {
+            const countdownElement = document.querySelector('.countdown');
+            let timeLeft = 3 * 24 * 60 * 60 + 12 * 60 * 60 + 45 * 60 + 30; // 3d 12h 45m 30s
+            
+            setInterval(() => {
+                const days = Math.floor(timeLeft / (24 * 60 * 60));
+                const hours = Math.floor((timeLeft % (24 * 60 * 60)) / (60 * 60));
+                const minutes = Math.floor((timeLeft % (60 * 60)) / 60);
+                const seconds = timeLeft % 60;
+                
+                countdownElement.textContent = `DRAW IN ${days}D ${hours}H ${minutes}M ${seconds}S`;
+                
+                if (timeLeft > 0) {
+                    timeLeft--;
+                } else {
+                    timeLeft = 7 * 24 * 60 * 60; // Reset to 7 days
+                }
+            }, 1000);
+        }
     </script>
 </body>
 </html>
