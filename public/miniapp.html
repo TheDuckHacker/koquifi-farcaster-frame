@@ -703,6 +703,17 @@
             }
         }
 
+        // Inicializar SDK de Farcaster
+        function initializeFarcasterSDK() {
+            if (typeof window.sdk !== 'undefined') {
+                // Llamar ready() para ocultar el splash screen
+                window.sdk.actions.ready();
+                console.log('Farcaster SDK inicializado correctamente');
+            } else {
+                console.log('Farcaster SDK no disponible');
+            }
+        }
+
         // Countdown timer
         function startCountdown() {
             const countdownElement = document.querySelector('.countdown');
@@ -723,6 +734,12 @@
                 }
             }, 1000);
         }
+
+        // Inicializar cuando la página esté lista
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeFarcasterSDK();
+            startCountdown();
+        });
     </script>
 </body>
 </html>
