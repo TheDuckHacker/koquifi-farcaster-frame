@@ -4,6 +4,19 @@ const blockchainService = require('../services/blockchain');
 const imageGenerator = require('../services/imageGenerator');
 const ticketService = require('../services/ticketService');
 const notificationService = require('../services/notificationService');
+const koquifiIntegration = require('../services/koquifiIntegration');
+
+// Función para generar números aleatorios de lotería
+function generateRandomNumbers() {
+    const numbers = [];
+    while (numbers.length < 5) {
+        const num = Math.floor(Math.random() * 50) + 1;
+        if (!numbers.includes(num)) {
+            numbers.push(num);
+        }
+    }
+    return numbers.sort((a, b) => a - b);
+}
 
 // Endpoint principal para interacciones del Frame
 router.post('/interact', async (req, res) => {
@@ -112,24 +125,54 @@ async function handleBuyTicket(userFid, inputText) {
     try {
         console.log(`Handling buy ticket for user ${userFid}`);
         
-        // Simular compra de ticket
-        const ticket = await ticketService.simulateBlockchainPurchase(userFid);
+        // Verificar si el backend está disponible
+        const healthCheck = await koquifiIntegration.healthCheck();
+        if (!healthCheck.success) {
+            console.log('Backend no disponible, usando simulación');
+            const ticket = await ticketService.simulateBlockchainPurchase(userFid);
+            return {
+                type: 'frame',
+                image: `https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/buy?fid=${userFid}&t=${Date.now()}`,
+                buttons: [
+                    { label: '✅ Confirmar Compra', action: 'post' },
+                    { label: '❌ Cancelar', action: 'post' }
+                ],
+                postUrl: `https://koquifi-farcaster-frame-815l.vercel.app/api/frame/buy-confirm`,
+                state: { 
+                    step: 'buy', 
+                    userFid: userFid, 
+                    ticket: ticket,
+                    inputText: inputText 
+                }
+            };
+        }
+
+        // Usar el backend real
+        const walletAddress = inputText || `0x${userFid}${'0'.repeat(40 - userFid.length)}`;
+        const numbers = generateRandomNumbers();
         
-        return {
-            type: 'frame',
-            image: `https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/buy?fid=${userFid}&t=${Date.now()}`,
-            buttons: [
-                { label: '✅ Confirmar Compra', action: 'post' },
-                { label: '❌ Cancelar', action: 'post' }
-            ],
-            postUrl: `https://koquifi-farcaster-frame-815l.vercel.app/api/frame/buy-confirm`,
-            state: { 
-                step: 'buy', 
-                userFid: userFid, 
-                ticket: ticket,
-                inputText: inputText 
-            }
-        };
+        const result = await koquifiIntegration.buyTicket(userFid, numbers, walletAddress);
+        
+        if (result.success) {
+            return {
+                type: 'frame',
+                image: `https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/buy?fid=${userFid}&t=${Date.now()}`,
+                buttons: [
+                    { label: '✅ Confirmar Compra', action: 'post' },
+                    { label: '❌ Cancelar', action: 'post' }
+                ],
+                postUrl: `https://koquifi-farcaster-frame-815l.vercel.app/api/frame/buy-confirm`,
+                state: { 
+                    step: 'buy', 
+                    userFid: userFid, 
+                    ticket: result.ticket,
+                    inputText: inputText,
+                    backend: true
+                }
+            };
+        } else {
+            return getErrorFrame('Error comprando ticket: ' + result.error);
+        }
     } catch (error) {
         console.error('Error in handleBuyTicket:', error);
         return getErrorFrame('Error comprando ticket: ' + error.message);
