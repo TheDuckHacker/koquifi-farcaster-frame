@@ -1,37 +1,14 @@
 {
   "name": "KoquiFI Lottery",
   "short_name": "KoquiFI",
-  "description": "Lotería semanal con tokens KOKI en Base Network. Participa y gana premios increíbles cada semana.",
+  "description": "Lotería semanal con tokens KOKI en Base Network",
   "icon": "https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/main?w=512&h=512",
-  "start_url": "https://koquifi-farcaster-frame-815l.vercel.app",
+  "start_url": "https://koquifi-farcaster-frame-815l.vercel.app/",
   "display": "standalone",
   "theme_color": "#FF6B35",
   "background_color": "#1A1A1A",
-  "categories": ["finance", "games", "social", "defi"],
-  "screenshots": [
-    {
-      "src": "https://koquifi-farcaster-frame-815l.vercel.app/api/frame/image/main?w=1200&h=630",
-      "sizes": "1200x630",
-      "type": "image/png"
-    }
-  ],
-  "related_applications": [],
-  "prefer_related_applications": false,
+  "categories": ["finance", "games", "social"],
   "scope": "/",
   "lang": "es",
-  "dir": "ltr",
-  "orientation": "portrait",
-  "display_override": ["window-controls-overlay"],
-  "edge_side_panel": {
-    "preferred_width": 400
-  },
-  "launch_handler": {
-    "client_mode": "navigate-existing"
-  },
-  "protocol_handlers": [
-    {
-      "protocol": "web+koquifi",
-      "url": "https://koquifi-farcaster-frame-815l.vercel.app?action=%s"
-    }
-  ]
+  "dir": "ltr"
 }

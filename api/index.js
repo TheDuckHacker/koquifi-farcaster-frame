@@ -35,6 +35,9 @@ app.use((req, res, next) => {
     if (req.path === '/.well-known/manifest.json') {
         res.setHeader('Content-Type', 'application/manifest+json');
         res.setHeader('Cache-Control', 'public, max-age=3600');
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     }
     
     // Headers para CORS
@@ -43,6 +46,14 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     
     next();
+});
+
+// Ruta específica para manifest
+app.get('/.well-known/manifest.json', (req, res) => {
+    res.setHeader('Content-Type', 'application/manifest+json');
+    res.setHeader('Cache-Control', 'public, max-age=3600');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.sendFile(path.join(__dirname, '../public/.well-known/manifest.json'));
 });
 
 // Ruta principal - servir el Frame HTML
